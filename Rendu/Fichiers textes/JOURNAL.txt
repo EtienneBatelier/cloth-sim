@@ -1,0 +1,47 @@
+﻿S2 -
+Nous avons profité des deux heures de série pour faire la première étape du projet.
+La classe Vecteur3D est écrite et le test affiche des résultats cohérents.
+De plus nous avons convenu de la manière de se départager le travail: nous effectuerons tour à tour les "P[i]" et dans quelques semaines Etienne s'attaquera à la partie graphique tandis que Victoria effectuera la plupart des étapes pour l'évolution du système.
+ 
+S3 -
+L'encapsulation ayant déjà été faite la semaine passée nous n'avons rien fait de particulier.
+ 
+S4 -
+Le travail étant plus conséquent nous n'avons pas terminé en deux heures de série ce qu'il faut faire. La surcharge des opérateurs a l'air de fonctionner, mais les classes Masse et Ressort n'ont pas été terminées. De plus les classes Vecteur3D, Masse et Ressort étant dépendantes les unes des autres il est difficile de terminer sans que les autres soient complètes.
+
+S5 - Semaine de vacances
+Nous n'avons pas avancé sur le projet cette semaine.
+
+S6 -
+Nous avons terminé avant vendredi les classes Masse et Ressort. Les tests marchent jusque là.
+
+S7 -
+Victoria a fait la classe Integrateur et IntegrateurEuler. Les tests sont cohérents.
+Etienne a fait P8. Au départ Tissu avait un vector de Masse et non pas de pointeurs sur Masse. Mais la conception se révélant trop difficile il a fallu tout changer et mettre des pointeurs.
+De plus Etienne a créé des fonctions connecte_masse2() et connecte2(), en public, qui permettent d’accrocher «à la main» les masses par des ressorts, en attendant des Tissus de forme précise.
+
+S8 -
+Nous avons fait P9 et P10.
+
+S9 -
+Nous nous sommes surtout préparés à la série notée, et n’avons donc pas avancé du projet.
+ 
+S10 -
+Etienne continue la partie graphique et Victoria commence p12.
+ 
+S11 -
+Nous continuons juste le travail commencé la semaine dernière. Nous remarquons à ce stade avancé du projet qu’il est utile voire nécessaire de discuter avec les autres pour bien comprendre comment concevoir les différentes étapes du projet et se transmettre nos différentes interprétations des consignes.
+ 
+S12 -
+Etienne a terminé la partie graphique et a fait les contraintes et crochets.
+ 
+S13 -
+Victoria a fait TissuDisque et TissuCompose. La conception de TissuDisque a pris un certain temps. En effet il a fallu revoir plusieurs fois l’algorithme pour la construction des TissuDisques. Malgré avoir réécrit plusieurs fois le code sur QT le résultat n’était pas du tout correct. Rédiger le code sur papier avant de le transcrire sur QT a finalement permis d’obtenir quelque chose de satisfaisant.
+De plus, dans la classe Tissu, nous avions un vector de Ressort et non pas de pointeurs sur Ressort. Mais n’arrivant pas à faire TissuCompose de cette façon il a fallu mettre des pointeurs et modifier la classe Tissu en accord avec ce changement. Grâce à ce changement nous avons pu supprimer connecte_masses() qui n'avais plus lieu d'etre.
+ 
+
+Week-end du rendu -
+Nous avons fait IntegrateurNewMark. Nous avons rajouté des destructeurs dans les classes qui en avait besoin, notament celle ayant des pointeurs dans leurs attributs.
+Nous avons commenté le code, complété le journal et les fichiers réponses qui n’étaient pas tout à fait à jour.
+Enfin nous avons rédiger le README et formaté l'ensemble des fichiers pour pouvoir rendre le projet.
+
