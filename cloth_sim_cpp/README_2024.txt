@@ -1,0 +1,1 @@
+This code was written in ~2017. The graphical Qt version is obsolete, for many of the classes used extensively were deprecated several Qt versions ago -- e.g, QGLWidget. The text version works just fine. A build_and_run.sh shell script compiles and runs it. 
