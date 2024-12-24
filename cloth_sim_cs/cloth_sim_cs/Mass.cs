@@ -1,6 +1,9 @@
 namespace Mass; 
 using Vector3D;
 using Spring;
+using System.Reflection.Metadata.Ecma335;
+using System.Numerics;
+using System.Data;
 
 unsafe class Mass
 {
@@ -30,4 +33,30 @@ unsafe class Mass
     //Get methods
 
     public Vector3D GetPosition() {return new Vector3D(position);}
+
+
+    
+
+    public double Speed()   {return velocity.Norm();}
+    public Vector3D Acceleration() 
+    {
+        Vector3D sum = new Vector3D();
+        foreach (Vector3D force in forces) sum += force;
+        return sum * (1.0/mass);
+    }
+
+    /*
+    public void UpdatePositionVelocity(IntegrationMethod intMeth, Vector3D externalForce, double dt)
+    {
+        Vector3D totalAcceleration = Acceleration() + externalForce*(1.0/mass);
+        velocity += intMeth.IntegrateVelocity(totalAcceleration, velocity, dt);
+        position += intMeth.IntegratePosition(totalAcceleration, velocity, dt);
+    }
+
+    public void UpdateForce()
+    {
+
+    }
+    */
+    
 }
