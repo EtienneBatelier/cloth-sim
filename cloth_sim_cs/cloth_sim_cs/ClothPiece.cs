@@ -15,7 +15,7 @@ class ClothPiece
 
     //Get and ToString() methods
 
-    public List<Mass> GetMasses() {return new List<Mass>(masses);}
+    public List<Mass> GetMasses() {return masses;}
     public override string ToString()
     {
         string toReturn = "";
