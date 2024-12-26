@@ -13,11 +13,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/media/etienne/3EC4E5D6C4E59087/Files/Programming projects/cloth-sim/cloth_sim_cs/cloth_sim_cs/cloth_sim_cs.csproj",
+      "projectUniqueName": "/home/etienne/Files/Programming projects/cloth-sim/cloth_sim_cs/cloth_sim_cs/cloth_sim_cs.csproj",
       "projectName": "cloth_sim_cs",
-      "projectPath": "/media/etienne/3EC4E5D6C4E59087/Files/Programming projects/cloth-sim/cloth_sim_cs/cloth_sim_cs/cloth_sim_cs.csproj",
+      "projectPath": "/home/etienne/Files/Programming projects/cloth-sim/cloth_sim_cs/cloth_sim_cs/cloth_sim_cs.csproj",
       "packagesPath": "/home/etienne/.nuget/packages/",
-      "outputPath": "/media/etienne/3EC4E5D6C4E59087/Files/Programming projects/cloth-sim/cloth_sim_cs/cloth_sim_cs/obj/",
+      "outputPath": "/home/etienne/Files/Programming projects/cloth-sim/cloth_sim_cs/cloth_sim_cs/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "/home/etienne/.nuget/NuGet/NuGet.Config"

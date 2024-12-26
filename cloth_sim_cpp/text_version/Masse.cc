@@ -26,7 +26,7 @@ Vecteur3D Masse::get_force_contraintes(){   // Cette methode n est utile qu a l 
     Vecteur3D retour(force_subie);          // les forces. Mais, mise_a_jour_force() ne prend pas les contraintes en comptes. A l aide de cette methode,
     for (auto& r : ressorts_associes)       // l'integrateur memorise les forces dues aux contraintes, utilise mise_a_jour_forces puis ajoute celles-ci.
     {
-        retour-= r->force_rappel(this);     // Remarque : cette methode n est pas const car
+        retour-= r->force_rappel(this);
     }
     retour -= Vecteur3D(0, 0, -9.81)*m;
     retour += vitesse*lambda;

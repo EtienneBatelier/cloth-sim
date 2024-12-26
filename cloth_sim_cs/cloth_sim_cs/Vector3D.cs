@@ -7,24 +7,24 @@ class Vector3D
 
     //Constructors
 
-    public Vector3D(double[] vector_)                               {vector = vector_;}
+    public Vector3D(double[] vector_)                               {vector = [vector_[0], vector_[1], vector_[2]];}
     public Vector3D(double x_1 = 0, double x_2 = 0, double x_3 = 0) {vector = [x_1, x_2, x_3];}
     public Vector3D(Vector3D v)                                     {vector = [v.GetVector()[0], v.GetVector()[1], v.GetVector()[2]];}
 
 
     //Get, Equals, and ToString methods
 
-    public double[] GetVector()         {return vector;}
+    public double[] GetVector()         {return [vector[0], vector[1], vector[2]];}
     public override string ToString()   {return "(" + vector[0].ToString() + ", "  +  vector[1].ToString() + ", " + vector[2] + ")";}
 
     public bool Equals(Vector3D w)
     {
         for (int i = 0; i < 3; i++)
         {
-            if (vector[i] == w.GetVector()[i])  //Evaluating (vector == w.GetVector()) would compare references
-            return true;
+            if (vector[i] != w.GetVector()[i])  //Evaluating (vector == w.GetVector()) would compare references
+            return false;
         }
-        return false;
+        return true;
     }
 
     public override bool Equals(object? obj)    //This override is Good measure to avoid a compilator Warning CS0660
