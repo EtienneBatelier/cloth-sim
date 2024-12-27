@@ -1,18 +1,26 @@
 namespace Hook;
-using Constraint;
+using ExternalForce;
 using Vector3D;
 using Mass;
 using ClothPiece;
 
-class Hook : Constraint
+class Hook : ExternalForce
 {
-    private List<Mass> affectedMasses; 
+    private readonly List<Mass> affectedMasses; 
 
-    //Constructor
+    //Constructors
 
-    public Hook(List<Mass> affectedMasses_) {affectedMasses = affectedMasses_;}
-    public Hook(Vector3D center, double radius, List<ClothPiece> clothPieces) 
+    public Hook(List<Mass> affectedMasses_, double? start_ = null, double? end_ = null) 
     {
+        base.start = start_;
+        base.end = end_;
+        affectedMasses = affectedMasses_;
+    }
+
+    public Hook(Vector3D center, double radius, List<ClothPiece> clothPieces, double? start_ = null, double? end_ = null) 
+    {
+        base.start = start_;
+        base.end = end_;
         affectedMasses = [];
         foreach (ClothPiece clothPiece in clothPieces)
         {
@@ -25,10 +33,6 @@ class Hook : Constraint
 
     //Other methods
 
-    public override bool Applies(Mass m , double time) 
-    {
-        return base.start <= time && base.end >= time && affectedMasses.Contains(m); 
-    } 
-    public override Vector3D Force(Mass m, double time) {return new Vector3D();}
-    public override void Effect(Mass m) {m.Immobilize();}
+    public override bool Applies(Mass m , double time) {return base.InTimeInterval(time) && affectedMasses.Contains(m);} 
+    public override Vector3D Force(Mass m, double time) {return new Vector3D(-m.GetForce());}
 }

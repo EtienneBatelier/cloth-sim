@@ -4,10 +4,10 @@ using Vector3D;
 
 class Spring
 {
-    private Mass firstEnd; 
-    private Mass secondEnd; 
-    private double stiffness; 
-    private double restLength; 
+    private readonly Mass firstEnd; 
+    private readonly Mass secondEnd; 
+    private readonly double stiffness; 
+    private readonly double restLength; 
 
 
     //Constructor

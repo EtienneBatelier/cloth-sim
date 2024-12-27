@@ -4,11 +4,15 @@ using Mass;
 using Spring;
 using EulerMethod;
 using ClothPiece;
-using Constraint;
+using ConstantForce;
+using ExternalForce;
+using Drag;
+using Hook;
+using Push;
+using PhysicalSystem;
 
 unsafe class TestPrinter
 {
-    /*
     public static void TestVector3D()
     {
         Console.WriteLine("TESTING Vector3D");
@@ -73,18 +77,18 @@ unsafe class TestPrinter
         Spring s1 = new Spring(m1, m2, 5, 2); 
         Spring s2 = new Spring(m2, m3, 5, 2);
         Console.Write(m1.ToString() + " and is connected to ");
-        foreach (Spring spring in m1.GetAssociatedSprings()) {Console.Write(spring + " ");}
+        //foreach (Spring spring in m1.GetAssociatedSprings()) {Console.Write(spring + " ");}
         Console.WriteLine("");
         Console.Write(m2.ToString() + " and is connected to ");
-        foreach (Spring spring in m2.GetAssociatedSprings()) {Console.Write(spring + " ");}
+        //foreach (Spring spring in m2.GetAssociatedSprings()) {Console.Write(spring + " ");}
         Console.WriteLine("");
         Console.Write(m3.ToString() + " and is connected to ");
-        foreach (Spring spring in m3.GetAssociatedSprings()) {Console.Write(spring + " ");}
+        //foreach (Spring spring in m3.GetAssociatedSprings()) {Console.Write(spring + " ");}
         Console.WriteLine("");
         Console.WriteLine("We make the masses updates their forces");
-        m1.UpdateForce([]);
-        m2.UpdateForce([]);
-        m3.UpdateForce([]);
+        m1.SetInnerForce();
+        m2.SetInnerForce();
+        m3.SetInnerForce();
         Console.WriteLine(m1.ToString() + " is subject to force " + m1.GetForce());
         Console.WriteLine(m1.ToString() + " is subject to force " + m2.GetForce());
         Console.WriteLine(m1.ToString() + " is subject to force " + m3.GetForce());
@@ -93,7 +97,7 @@ unsafe class TestPrinter
     public static void TestIntegrationMethod()
     {
         Console.WriteLine("TESTING IntegrationMethod");
-        Console.WriteLine("Instanciating three masses connected by two springsin an L shape: ");
+        Console.WriteLine("Instanciating three masses connected by two springs in an L shape: ");
         Mass m1 = new Mass(1, .5, new Vector3D([0, 1, 0])); 
         Mass m2 = new Mass(1, .5, new Vector3D([0, 0, 0]));
         Mass m3 = new Mass(1, .5, new Vector3D([1, 0, 0]));
@@ -109,12 +113,12 @@ unsafe class TestPrinter
         Console.WriteLine("Simulating the system for one tenth of a second: ");
         for (int n = 0; n < 10; n++)
         {
-            m1.UpdateForce([]);
-            m2.UpdateForce([]);
-            m3.UpdateForce([]);
-            m1.UpdateVelocityPosition(euler, dt, []);
-            m2.UpdateVelocityPosition(euler, dt, []);
-            m3.UpdateVelocityPosition(euler, dt, []);
+            m1.SetInnerForce();
+            m2.SetInnerForce();
+            m3.SetInnerForce();
+            m1.UpdateVelocityPosition(euler, dt);
+            m2.UpdateVelocityPosition(euler, dt);
+            m3.UpdateVelocityPosition(euler, dt);
             time += dt;
             Console.WriteLine("t = " + time);
             Console.WriteLine(m1);
@@ -149,33 +153,230 @@ unsafe class TestPrinter
             time += dt;
             foreach (Mass m in c.GetMasses())
             {
-                m.UpdateForce([]);
+                m.SetInnerForce();;
             }
             foreach (Mass m in c.GetMasses())
             {
-                m.UpdateVelocityPosition(euler, dt, []);
+                m.UpdateVelocityPosition(euler, dt);
             }
             Console.WriteLine("t = " + time);
             Console.WriteLine(c);
         }
     }
-    */
-
-    public static void TestConstraint()
-    {
-        
-    }
-
     
-    public static void OtherTests()
+    public static void TestConstantForce()
     {
-        int a = 3;
-        int* p = &a;
-        Console.WriteLine(new IntPtr(p));
+        Console.WriteLine("TESTING ConstantForce");
+        Console.WriteLine("Instanciating a piece of cloth with four masses in a square: ");
+        Mass m1 = new Mass(1, .5, new Vector3D([0, 1, 0])); 
+        Mass m2 = new Mass(1, .5, new Vector3D([1, 1, 0])); 
+        Mass m3 = new Mass(1, .5, new Vector3D([0, 0, 0]));
+        Mass m4 = new Mass(1, .5, new Vector3D([1, 0, 0]));
+        ClothPiece c = new ClothPiece([m1, m2, m3, m4]); 
+        c.Connect(0, 1, 5, .5); 
+        c.Connect(1, 3, 5, .5); 
+        c.Connect(3, 2, 5, .5); 
+        c.Connect(2, 0, 5, .5);
+        Console.WriteLine(c);
 
-        Mass m = new Mass(1, 1, new Vector3D([2, 3, 1]));
-        IntPtr id = new IntPtr(&m);
-        Console.WriteLine(id);
+        EulerMethod euler = new EulerMethod(); 
+        double dt = 0.01;
+        double time = 0.0 ;
+
+        Console.WriteLine("Instanciating a downwards constant force with no start and no end: ");
+        ConstantForce gravity = new ConstantForce(new Vector3D(0, 0, -9.81)); 
+        List<ExternalForce> externalForces = [gravity];
+        Console.WriteLine("Simulating the system for one tenth of a second: ");
+        for (int n = 0; n < 10; n++)
+        {
+            time += dt;
+            foreach (Mass m in c.GetMasses())
+            {
+                m.SetInnerForce();
+                Vector3D totalExternalForce = new Vector3D();
+                foreach (ExternalForce externalForce in externalForces) 
+                {
+                    if (externalForce.Applies(m, time)) {totalExternalForce += externalForce.Force(m, time);}
+                }                
+                m.AddExternalForce(totalExternalForce);
+            }
+            foreach (Mass m in c.GetMasses())
+            {
+                m.UpdateVelocityPosition(euler, dt); 
+            }
+            Console.WriteLine("t = " + time);
+            Console.WriteLine(c);
+        }
     }
+    
+    public static void TestDrag()
+    {
+        Console.WriteLine("TESTING Drag");
+        Console.WriteLine("Instanciating a piece of cloth with four masses in a square: ");
+        Mass m1 = new Mass(1, .5, new Vector3D([0, 1, 0])); 
+        Mass m2 = new Mass(1, .5, new Vector3D([1, 1, 0])); 
+        Mass m3 = new Mass(1, .5, new Vector3D([0, 0, 0]));
+        Mass m4 = new Mass(1, .5, new Vector3D([1, 0, 0]));
+        ClothPiece c = new ClothPiece([m1, m2, m3, m4]); 
+        c.Connect(0, 1, 5, .5); 
+        c.Connect(1, 3, 5, .5); 
+        c.Connect(3, 2, 5, .5); 
+        c.Connect(2, 0, 5, .5);
+        Console.WriteLine(c);
 
+        EulerMethod euler = new EulerMethod(); 
+        double dt = 0.01;
+        double time = 0.0 ;
+
+        Console.WriteLine("Instanciating a perpetual wind of velocity (0, 0, 1): ");
+        Drag wind = new Drag(new Vector3D(0, 0, 1)); 
+        List<ExternalForce> externalForces = [wind];
+        Console.WriteLine("Simulating the system for one tenth of a second: ");
+        for (int n = 0; n < 10; n++)
+        {
+            time += dt;
+            foreach (Mass m in c.GetMasses())
+            {
+                m.SetInnerForce();
+                Vector3D totalExternalForce = new Vector3D();
+                foreach (ExternalForce externalForce in externalForces) 
+                {
+                    if (externalForce.Applies(m, time)) {totalExternalForce += externalForce.Force(m, time);}
+                }                
+                m.AddExternalForce(totalExternalForce);
+            }
+            foreach (Mass m in c.GetMasses())
+            {
+                m.UpdateVelocityPosition(euler, dt); 
+            }
+            Console.WriteLine("t = " + time);
+            Console.WriteLine(c);
+        }
+        Console.WriteLine("This simulation is to be compared with TestClothPiece, in which the same system is simulated withtout wind.");
+    }
+    
+    public static void TestHook()
+    {
+        Console.WriteLine("TESTING Hook");
+        Console.WriteLine("Instanciating a piece of cloth with three masses in an L shape: ");
+        Mass m1 = new Mass(1, .5, new Vector3D([0, 1, 0])); 
+        Mass m2 = new Mass(1, .5, new Vector3D([0, 0, 0]));
+        Mass m3 = new Mass(1, .5, new Vector3D([1, 0, 0]));
+        ClothPiece c = new ClothPiece([m1, m2, m3]); 
+        c.Connect(0, 1, 5, .5);
+        c.Connect(1, 2, 5, .5);
+        Console.WriteLine(c);
+
+        EulerMethod euler = new EulerMethod(); 
+        double dt = 0.01;
+        double time = 0.0 ;
+
+        Console.WriteLine("Instanciating a hook on mass m1 (top of the L): ");
+        Hook hook = new Hook([m1]); 
+        List<ExternalForce> externalForces = [hook];
+        Console.WriteLine("Simulating the system for one tenth of a second: ");
+        for (int n = 0; n < 10; n++)
+        {
+            time += dt;
+            foreach (Mass m in c.GetMasses())
+            {
+                m.SetInnerForce();
+                Vector3D totalExternalForce = new Vector3D();
+                foreach (ExternalForce externalForce in externalForces) 
+                {
+                    if (externalForce.Applies(m, time)) {totalExternalForce += externalForce.Force(m, time);}
+                }                
+                m.AddExternalForce(totalExternalForce);
+            }
+            foreach (Mass m in c.GetMasses())
+            {
+                m.UpdateVelocityPosition(euler, dt); 
+            }
+            Console.WriteLine("t = " + time);
+            Console.WriteLine(c);
+        }
+    }
+    
+    public static void TestPush()
+    {
+        Console.WriteLine("TESTING Push");
+        Console.WriteLine("Instanciating a piece of cloth with four masses in a square: ");
+        Mass m1 = new Mass(1, .5, new Vector3D([0, 1, 0])); 
+        Mass m2 = new Mass(1, .5, new Vector3D([1, 1, 0])); 
+        Mass m3 = new Mass(1, .5, new Vector3D([0, 0, 0]));
+        Mass m4 = new Mass(1, .5, new Vector3D([1, 0, 0]));
+        ClothPiece c = new ClothPiece([m1, m2, m3, m4]); 
+        c.Connect(0, 1, 5, .5); 
+        c.Connect(1, 3, 5, .5); 
+        c.Connect(3, 2, 5, .5); 
+        c.Connect(2, 0, 5, .5);
+        Console.WriteLine(c);
+
+        EulerMethod euler = new EulerMethod(); 
+        double dt = 0.01;
+        double time = 0.0 ;
+
+        Console.WriteLine("Instanciating an upward push on mass m1 (top left vertex): ");
+        Push push = new Push([m1], new Vector3D(0, 0, 5), 0.0, 0.015); 
+        List<ExternalForce> externalForces = [push];
+        Console.WriteLine("Simulating the system for one tenth of a second: ");
+        for (int n = 0; n < 10; n++)
+        {
+            time += dt;
+            foreach (Mass m in c.GetMasses())
+            {
+                m.SetInnerForce();
+                Vector3D totalExternalForce = new Vector3D();
+                foreach (ExternalForce externalForce in externalForces) 
+                {
+                    if (externalForce.Applies(m, time)) {totalExternalForce += externalForce.Force(m, time);}
+                }                
+                m.AddExternalForce(totalExternalForce);
+            }
+            foreach (Mass m in c.GetMasses())
+            {
+                m.UpdateVelocityPosition(euler, dt); 
+            }
+            Console.WriteLine("t = " + time);
+            Console.WriteLine(c);
+        }
+    }
+    
+    public static void TestPhysicalSystem()
+    {
+        Console.WriteLine("TESTING PhysicalSystem");
+        Console.WriteLine("Instanciating a piece of cloth with four masses in a square: ");
+        Mass m1 = new Mass(1, .5, new Vector3D([0, 1, 0])); 
+        Mass m2 = new Mass(1, .5, new Vector3D([1, 1, 0])); 
+        Mass m3 = new Mass(1, .5, new Vector3D([0, 0, 0]));
+        Mass m4 = new Mass(1, .5, new Vector3D([1, 0, 0]));
+        ClothPiece c = new ClothPiece([m1, m2, m3, m4]); 
+        c.Connect(0, 1, 5, .5); 
+        c.Connect(1, 3, 5, .5); 
+        c.Connect(3, 2, 5, .5); 
+        c.Connect(2, 0, 5, .5);
+        Console.WriteLine(c);        
+
+        Console.WriteLine("Instanciating a hook on mass m1 (top left vertex)");
+        Hook hook = new Hook([m1]); 
+        Console.WriteLine("Instanciating an upward push on mass m4 (bottom right vertex)");
+        Push push = new Push([m4], new Vector3D(0, 0, 5), 0.0, 0.015); 
+        Console.WriteLine("Instanciating a perpetual wind of velocity (0, 1, 0)");
+        Drag wind = new Drag(new Vector3D(0, 1, 0)); 
+        Console.WriteLine("Instanciating a perpetual downwards constant force with no start and no end");
+        ConstantForce gravity = new ConstantForce(new Vector3D(0, 0, -9.81)); 
+
+        Console.WriteLine("Instanciating a physical system with the above-mentioned piece of cloth and external forces");
+        PhysicalSystem system = new PhysicalSystem([c], [hook, push, wind, gravity]);
+
+        EulerMethod euler = new EulerMethod(); 
+        double dt = 0.01;
+
+        Console.WriteLine("Simulating the system for one tenth of a second: ");
+        for (int n = 0; n < 10; n++)
+        {
+            system.Update(euler, dt);
+            Console.WriteLine(system);
+        }
+    }
 }

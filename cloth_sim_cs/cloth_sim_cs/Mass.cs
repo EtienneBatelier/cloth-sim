@@ -2,12 +2,11 @@ namespace Mass;
 using Vector3D;
 using Spring;
 using IntegrationMethod; 
-using Constraint;
 
 unsafe class Mass
 {
-    private double mass;
-    private double penetrationCoef;
+    private readonly double mass;
+    private readonly double penetrationCoef;
     private Vector3D position;
     private Vector3D velocity; 
     private Vector3D force; 
@@ -54,6 +53,7 @@ unsafe class Mass
     public double GetPenetrationCoef() {return penetrationCoef;}
     public Vector3D GetPosition() {return new Vector3D(position);}
     public Vector3D GetVelocity() {return new Vector3D(velocity);}
+    public Vector3D GetForce() {return new Vector3D(force);}
 
     public override string ToString()
     {
@@ -64,25 +64,20 @@ unsafe class Mass
     //Other methods
 
     public double Speed() {return velocity.Norm();}
-    public Vector3D Acceleration() {return force * (1.0/mass);}
-
-
+    public Vector3D Acceleration() {return force*(1.0/mass);}
     public void Attach(Spring spring) {associatedSprings.Add(spring);} 
+    public void AddExternalForce(Vector3D totalExternalForce) {force += totalExternalForce;}
 
-    public void UpdateForce(List<Vector3D> externalForces)
+    public void SetInnerForce()
     {
         force = new Vector3D(); 
         foreach (Spring spring in associatedSprings)
         {
             force += spring.SpringForce(this);
-        }
-        foreach (Vector3D force_ in externalForces)
-        {
-            force += force_;
-        }
-    }    
-    
-    public void UpdateVelocityPosition(IntegrationMethod intMeth, double dt, List<Constraint> constraints)
+        } 
+    }
+
+    public void UpdateVelocityPosition(IntegrationMethod intMeth, double dt)
     {
         (Vector3D velocity_, Vector3D position_) = intMeth.Integrate(Acceleration(), 
                                                                     new Vector3D(velocity), 
@@ -90,18 +85,10 @@ unsafe class Mass
                                                                     dt);
         velocity = velocity_;
         position = position_;
-        foreach (Constraint constraint in constraints) {constraint.Effect(this);}
-    }
-    
-    public void Immobilize() 
-    {
-        force = new Vector3D();
-        velocity = new Vector3D();
     }
 
 
-    // Testing methods (should remain as comments)
+    //Testing methods (should remain as comments)
     
     //public List<Spring> GetAssociatedSprings() {return associatedSprings;}
-    //public Vector3D GetForce() {return force;}
 }

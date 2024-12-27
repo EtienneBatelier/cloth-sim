@@ -13,6 +13,7 @@ class Program
         //TestPrinter.TestMassSpring();
         //TestPrinter.TestIntegrationMethod();
         //TestPrinter.TestClothPiece();
-        TestPrinter.TestConstraint();
+        //TestPrinter.TestDrag();
+        TestPrinter.TestPhysicalSystem();
     }
 }

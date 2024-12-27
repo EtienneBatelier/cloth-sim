@@ -1,20 +1,25 @@
 namespace Drag;
-using Constraint;
+using ExternalForce;
 using Mass;
 using Vector3D;
 
-class Drag : Constraint
+class Drag : ExternalForce
 {
-    private Vector3D windVelocity;
+    private readonly Vector3D windVelocity;
+
 
     //Constructor
 
-    public Drag(double start_, double end_, Vector3D windVelocity_) {base.start = start_; base.end = end_; windVelocity = new Vector3D(windVelocity_);}
+    public Drag(Vector3D windVelocity_, double? start_ = null, double? end_ = null) 
+        {
+            start = start_; 
+            end = end_; 
+            windVelocity = new Vector3D(windVelocity_);
+        }
 
 
     //Other methods
 
-    public override bool Applies(Mass m, double time) {return (base.start <= time && base.end >= time);}
+    public override bool Applies(Mass m, double time) {return base.InTimeInterval(time);}
     public override Vector3D Force(Mass m, double time) {return -m.GetPenetrationCoef()*(m.GetVelocity() - windVelocity);}
-    public override void Effect(Mass m) {}
 }
