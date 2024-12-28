@@ -37,5 +37,5 @@ class ClothPiece
 
     //Testing methods
 
-    //public List<Spring> GetSprings() {return springs;}
+    public List<Spring> GetSprings() {return springs;}
 }

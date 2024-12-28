@@ -11,9 +11,13 @@ class Program
     {
         //TestPrinter.TestVector3D();
         //TestPrinter.TestMassSpring();
-        //TestPrinter.TestIntegrationMethod();
+        //TestPrinter.TestEulerMethod();
+        //TestPrinter.TestNewmarkMethod();
         //TestPrinter.TestClothPiece();
+        //TestPrinter.TestConstantForce();
         //TestPrinter.TestDrag();
+        //TestPrinter.TestHook();
+        //TestPrinter.TestPush();
         TestPrinter.TestPhysicalSystem();
     }
 }

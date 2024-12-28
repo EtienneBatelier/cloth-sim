@@ -2,6 +2,7 @@ namespace Mass;
 using Vector3D;
 using Spring;
 using IntegrationMethod; 
+using ExternalForce;
 
 unsafe class Mass
 {
@@ -61,30 +62,28 @@ unsafe class Mass
     }
 
 
+    //Set methods 
+
+    public void SetVelocity(Vector3D velocity_) {velocity = new Vector3D(velocity_);}
+    public void SetPosition(Vector3D position_) {position = new Vector3D(position_);}
+    public void SetInnerForce() {force = InnerForce();}
+
+
     //Other methods
 
     public double Speed() {return velocity.Norm();}
     public Vector3D Acceleration() {return force*(1.0/mass);}
     public void Attach(Spring spring) {associatedSprings.Add(spring);} 
-    public void AddExternalForce(Vector3D totalExternalForce) {force += totalExternalForce;}
-
-    public void SetInnerForce()
+    public void AddExternalForce(Vector3D force_) {force += force_;}
+    
+    public Vector3D InnerForce()
     {
-        force = new Vector3D(); 
+        Vector3D force_ = new Vector3D(); 
         foreach (Spring spring in associatedSprings)
         {
-            force += spring.SpringForce(this);
+            force_ += spring.SpringForce(this);
         } 
-    }
-
-    public void UpdateVelocityPosition(IntegrationMethod intMeth, double dt)
-    {
-        (Vector3D velocity_, Vector3D position_) = intMeth.Integrate(Acceleration(), 
-                                                                    new Vector3D(velocity), 
-                                                                    new Vector3D(position), 
-                                                                    dt);
-        velocity = velocity_;
-        position = position_;
+        return force_;
     }
 
 

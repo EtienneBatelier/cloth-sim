@@ -4,6 +4,7 @@ using ExternalForce;
 using IntegrationMethod;
 using Mass;
 using Vector3D;
+using Hook;
 
 class PhysicalSystem
 {
@@ -17,11 +18,21 @@ class PhysicalSystem
     public PhysicalSystem(List<ClothPiece> clothPieces_, List<ExternalForce> externalForces_, double initialTime = 0)
     {
         clothPieces = clothPieces_;
-        externalForces = externalForces_;
         time = initialTime;
+        externalForces = externalForces_;
+        for (int i = externalForces.Count - 1; i > -1; i--)
+        {
+            if (externalForces[i] is Hook) 
+            {
+                externalForces.Add(externalForces[i]);
+                externalForces.RemoveAt(i);
+            }
+        }
     }
 
+
     //ToString method
+    
     public override string ToString()
     {
         string toReturn = "";
@@ -38,25 +49,30 @@ class PhysicalSystem
 
     //Other methods
 
-    public void Update(IntegrationMethod intMeth, double dt)
+    public void Initialize()
     {
-        time += dt;
         foreach (ClothPiece c in clothPieces)
         {
             foreach (Mass m in c.GetMasses())
             {
                 m.SetInnerForce();
-                Vector3D totalExternalForce = new Vector3D();
                 foreach (ExternalForce externalForce in externalForces) 
                 {
-                    if (externalForce.Applies(m, time)) {totalExternalForce += externalForce.Force(m, time);}
+                    if (externalForce.Applies(m, time)) {m.AddExternalForce(externalForce.Force(m, time));}
                 }                
-                m.AddExternalForce(totalExternalForce);
-            }
-            foreach (Mass m in c.GetMasses())
-            {
-                m.UpdateVelocityPosition(intMeth, dt); 
             }
         }
+    }
+
+    public void Update(IntegrationMethod intMeth, double dt)
+    {
+        foreach (ClothPiece c in clothPieces)
+        {
+            foreach (Mass m in c.GetMasses())
+            {
+                intMeth.UpdateForceVelocityPosition(m, externalForces, time, dt); 
+            }
+        }
+        time += dt;
     }
 }

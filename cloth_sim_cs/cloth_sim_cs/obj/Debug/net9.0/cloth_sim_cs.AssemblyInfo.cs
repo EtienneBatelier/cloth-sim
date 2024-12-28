@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("cloth_sim_cs")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+fc2efa7a7b350b142977b042165bc7d284cbe1c4")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+1abc82a9aeabcda1fac1dcad6edf5ec2794bfdfa")]
 [assembly: System.Reflection.AssemblyProductAttribute("cloth_sim_cs")]
 [assembly: System.Reflection.AssemblyTitleAttribute("cloth_sim_cs")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

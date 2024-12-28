@@ -1,13 +1,19 @@
 namespace IntegrationMethod;
 using Vector3D;
-
+using Mass;
+using ExternalForce;
 
 class IntegrationMethod
 {
     public IntegrationMethod() {}
+    public virtual void UpdateForceVelocityPosition(Mass m, List<ExternalForce> externalForces, double time, double dt) {}
 
-    public virtual (Vector3D, Vector3D) Integrate(Vector3D acceleration, Vector3D velocity, Vector3D position, double dt)
+    public void UpdateForce(Mass m, List<ExternalForce> externalForces, double time) 
     {
-        return (velocity, position);
+        m.SetInnerForce();
+        foreach (ExternalForce externalForce in externalForces) 
+        {
+            if (externalForce.Applies(m, time)) {m.AddExternalForce(externalForce.Force(m, time));}
+        } 
     }
 }

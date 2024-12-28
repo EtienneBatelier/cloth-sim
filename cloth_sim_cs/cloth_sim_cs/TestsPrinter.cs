@@ -3,9 +3,9 @@ using Vector3D;
 using Mass;
 using Spring;
 using EulerMethod;
+using NewmarkMethod;
 using ClothPiece;
 using ConstantForce;
-using ExternalForce;
 using Drag;
 using Hook;
 using Push;
@@ -94,31 +94,74 @@ unsafe class TestPrinter
         Console.WriteLine(m1.ToString() + " is subject to force " + m3.GetForce());
     }
 
-    public static void TestIntegrationMethod()
+    public static void TestEulerMethod()
     {
-        Console.WriteLine("TESTING IntegrationMethod");
-        Console.WriteLine("Instanciating three masses connected by two springs in an L shape: ");
+        Console.WriteLine("TESTING EulerMethod");
+        Console.WriteLine("Instanciating three masses connected by two springs in an L shape");
+        Mass m1 = new Mass(1, .5, new Vector3D([0, 1, 0])); 
+        Mass m2 = new Mass(1, .5, new Vector3D([0, 0, 0]));
+        Mass m3 = new Mass(1, .5, new Vector3D([1, 0, 0]));
+        Spring s1 = new Spring(m1, m2, 5, .5);
+        Spring s2 = new Spring(m2, m3, 5, .5); 
+
+        Console.WriteLine("Instanciating Euler's integration method");
+        EulerMethod euler = new EulerMethod(); 
+        double dt = 0.01;
+        double time = 0.0;
+
+        Console.WriteLine("Initializing the system: ");
+        m1.SetInnerForce();
+        m2.SetInnerForce();
+        m3.SetInnerForce();
+        Console.WriteLine("t = " + time);
+        Console.WriteLine(m1);
+        Console.WriteLine(m2);
+        Console.WriteLine(m3);
+
+        Console.WriteLine("Simulating the system for half a second: ");
+        for (int n = 0; n < 50; n++)
+        {
+            euler.UpdateForceVelocityPosition(m1, [], time, dt);
+            euler.UpdateForceVelocityPosition(m2, [], time, dt);
+            euler.UpdateForceVelocityPosition(m3, [], time, dt);
+            time += dt;
+            Console.WriteLine("t = " + time);
+            Console.WriteLine(m1);
+            Console.WriteLine(m2);
+            Console.WriteLine(m3);
+        }
+    }
+
+    public static void TestNewmarkMethod()
+    {
+        Console.WriteLine("TESTING NewmarkMethod");
+        Console.WriteLine("Instanciating three masses connected by two springs in an L shape");
         Mass m1 = new Mass(1, .5, new Vector3D([0, 1, 0])); 
         Mass m2 = new Mass(1, .5, new Vector3D([0, 0, 0]));
         Mass m3 = new Mass(1, .5, new Vector3D([1, 0, 0]));
         Spring s1 = new Spring(m1, m2, 5, .5);
         Spring s2 = new Spring(m2, m3, 5, .5);
+
+        Console.WriteLine("Instanciating Newmark's integration method");
+        NewmarkMethod newmark = new NewmarkMethod(); 
+        double dt = 0.01;
+        double time = 0.0;
+
+        Console.WriteLine("Initializing the system: ");
+        m1.SetInnerForce();
+        m2.SetInnerForce();
+        m3.SetInnerForce();
+        Console.WriteLine("t = " + time);
         Console.WriteLine(m1);
         Console.WriteLine(m2);
         Console.WriteLine(m3);
-        EulerMethod euler = new EulerMethod(); 
-        double dt = 0.01;
-        double time = 0.0 ;
 
-        Console.WriteLine("Simulating the system for one tenth of a second: ");
-        for (int n = 0; n < 10; n++)
+        Console.WriteLine("Simulating the system for half a second: ");
+        for (int n = 0; n < 50; n++)
         {
-            m1.SetInnerForce();
-            m2.SetInnerForce();
-            m3.SetInnerForce();
-            m1.UpdateVelocityPosition(euler, dt);
-            m2.UpdateVelocityPosition(euler, dt);
-            m3.UpdateVelocityPosition(euler, dt);
+            newmark.UpdateForceVelocityPosition(m1, [], time, dt);
+            newmark.UpdateForceVelocityPosition(m2, [], time, dt);
+            newmark.UpdateForceVelocityPosition(m3, [], time, dt);
             time += dt;
             Console.WriteLine("t = " + time);
             Console.WriteLine(m1);
@@ -130,7 +173,6 @@ unsafe class TestPrinter
     public static void TestClothPiece()
     {
         Console.WriteLine("TESTING ClothPiece");
-        Console.WriteLine("Requires the commented testing methods in ClothPiece.cs");
         Console.WriteLine("Instanciating a piece of cloth with four masses in a square: ");
         Mass m1 = new Mass(1, .5, new Vector3D([0, 1, 0])); 
         Mass m2 = new Mass(1, .5, new Vector3D([1, 1, 0])); 
@@ -141,24 +183,28 @@ unsafe class TestPrinter
         c.Connect(1, 3, 5, .5); 
         c.Connect(3, 2, 5, .5); 
         c.Connect(2, 0, 5, .5);
+
+        Console.WriteLine("Instanciating Newmark's integration method");
+        NewmarkMethod newmark = new NewmarkMethod(); 
+        double dt = 0.01;
+        double time = 0.0;
+
+        Console.WriteLine("Initializing the system: ");
+        foreach (Mass m in c.GetMasses())
+            {
+                m.SetInnerForce();
+            }
+        Console.WriteLine("t = " + time);
         Console.WriteLine(c);
 
-        EulerMethod euler = new EulerMethod(); 
-        double dt = 0.01;
-        double time = 0.0 ;
-
-        Console.WriteLine("Simulating the system for one tenth of a second: ");
-        for (int n = 0; n < 10; n++)
+        Console.WriteLine("Simulating the system for half a second: ");
+        for (int n = 0; n < 50; n++)
         {
+            foreach (Mass m in c.GetMasses())
+            {
+                newmark.UpdateForceVelocityPosition(m, [], time, dt);
+            }
             time += dt;
-            foreach (Mass m in c.GetMasses())
-            {
-                m.SetInnerForce();;
-            }
-            foreach (Mass m in c.GetMasses())
-            {
-                m.UpdateVelocityPosition(euler, dt);
-            }
             Console.WriteLine("t = " + time);
             Console.WriteLine(c);
         }
@@ -177,33 +223,32 @@ unsafe class TestPrinter
         c.Connect(1, 3, 5, .5); 
         c.Connect(3, 2, 5, .5); 
         c.Connect(2, 0, 5, .5);
-        Console.WriteLine(c);
 
-        EulerMethod euler = new EulerMethod(); 
+        Console.WriteLine("Instanciating Newmark's integration method");
+        NewmarkMethod newmark = new NewmarkMethod(); 
         double dt = 0.01;
-        double time = 0.0 ;
+        double time = 0.0;
 
-        Console.WriteLine("Instanciating a downwards constant force with no start and no end: ");
+        Console.WriteLine("Instanciating a perpetual downwards constant force");
         ConstantForce gravity = new ConstantForce(new Vector3D(0, 0, -9.81)); 
-        List<ExternalForce> externalForces = [gravity];
-        Console.WriteLine("Simulating the system for one tenth of a second: ");
-        for (int n = 0; n < 10; n++)
-        {
-            time += dt;
-            foreach (Mass m in c.GetMasses())
+
+        Console.WriteLine("Initializing the system: ");
+        foreach (Mass m in c.GetMasses())
             {
                 m.SetInnerForce();
-                Vector3D totalExternalForce = new Vector3D();
-                foreach (ExternalForce externalForce in externalForces) 
-                {
-                    if (externalForce.Applies(m, time)) {totalExternalForce += externalForce.Force(m, time);}
-                }                
-                m.AddExternalForce(totalExternalForce);
+                if (gravity.Applies(m, time)) {m.AddExternalForce(gravity.Force(m, time));}
             }
+        Console.WriteLine("t = " + time);
+        Console.WriteLine(c);
+
+        Console.WriteLine("Simulating the system for half a second: ");
+        for (int n = 0; n < 50; n++)
+        {
             foreach (Mass m in c.GetMasses())
             {
-                m.UpdateVelocityPosition(euler, dt); 
+                newmark.UpdateForceVelocityPosition(m, [gravity], time, dt);
             }
+            time += dt;
             Console.WriteLine("t = " + time);
             Console.WriteLine(c);
         }
@@ -222,37 +267,35 @@ unsafe class TestPrinter
         c.Connect(1, 3, 5, .5); 
         c.Connect(3, 2, 5, .5); 
         c.Connect(2, 0, 5, .5);
-        Console.WriteLine(c);
 
-        EulerMethod euler = new EulerMethod(); 
+        Console.WriteLine("Instanciating Newmark's integration method");
+        NewmarkMethod newmark = new NewmarkMethod(); 
         double dt = 0.01;
-        double time = 0.0 ;
+        double time = 0.0;
 
         Console.WriteLine("Instanciating a perpetual wind of velocity (0, 0, 1): ");
         Drag wind = new Drag(new Vector3D(0, 0, 1)); 
-        List<ExternalForce> externalForces = [wind];
-        Console.WriteLine("Simulating the system for one tenth of a second: ");
-        for (int n = 0; n < 10; n++)
-        {
-            time += dt;
-            foreach (Mass m in c.GetMasses())
+
+        Console.WriteLine("Initializing the system: ");
+        foreach (Mass m in c.GetMasses())
             {
                 m.SetInnerForce();
-                Vector3D totalExternalForce = new Vector3D();
-                foreach (ExternalForce externalForce in externalForces) 
-                {
-                    if (externalForce.Applies(m, time)) {totalExternalForce += externalForce.Force(m, time);}
-                }                
-                m.AddExternalForce(totalExternalForce);
+                if (wind.Applies(m, time)) {m.AddExternalForce(wind.Force(m, time));}
             }
+        Console.WriteLine("t = " + time);
+        Console.WriteLine(c);
+
+        Console.WriteLine("Simulating the system for half a second: ");
+        for (int n = 0; n < 50; n++)
+        {
             foreach (Mass m in c.GetMasses())
             {
-                m.UpdateVelocityPosition(euler, dt); 
+                newmark.UpdateForceVelocityPosition(m, [wind], time, dt);
             }
+            time += dt;
             Console.WriteLine("t = " + time);
             Console.WriteLine(c);
         }
-        Console.WriteLine("This simulation is to be compared with TestClothPiece, in which the same system is simulated withtout wind.");
     }
     
     public static void TestHook()
@@ -265,33 +308,32 @@ unsafe class TestPrinter
         ClothPiece c = new ClothPiece([m1, m2, m3]); 
         c.Connect(0, 1, 5, .5);
         c.Connect(1, 2, 5, .5);
-        Console.WriteLine(c);
 
-        EulerMethod euler = new EulerMethod(); 
+        Console.WriteLine("Instanciating Newmark's integration method");
+        NewmarkMethod newmark = new NewmarkMethod(); 
         double dt = 0.01;
-        double time = 0.0 ;
+        double time = 0.0;
 
         Console.WriteLine("Instanciating a hook on mass m1 (top of the L): ");
         Hook hook = new Hook([m1]); 
-        List<ExternalForce> externalForces = [hook];
-        Console.WriteLine("Simulating the system for one tenth of a second: ");
-        for (int n = 0; n < 10; n++)
-        {
-            time += dt;
-            foreach (Mass m in c.GetMasses())
+
+        Console.WriteLine("Initializing the system: ");
+        foreach (Mass m in c.GetMasses())
             {
                 m.SetInnerForce();
-                Vector3D totalExternalForce = new Vector3D();
-                foreach (ExternalForce externalForce in externalForces) 
-                {
-                    if (externalForce.Applies(m, time)) {totalExternalForce += externalForce.Force(m, time);}
-                }                
-                m.AddExternalForce(totalExternalForce);
+                if (hook.Applies(m, time)) {m.AddExternalForce(hook.Force(m, time));}
             }
+        Console.WriteLine("t = " + time);
+        Console.WriteLine(c);
+
+        Console.WriteLine("Simulating the system for half a second: ");
+        for (int n = 0; n < 50; n++)
+        {
             foreach (Mass m in c.GetMasses())
             {
-                m.UpdateVelocityPosition(euler, dt); 
+                newmark.UpdateForceVelocityPosition(m, [hook], time, dt);
             }
+            time += dt;
             Console.WriteLine("t = " + time);
             Console.WriteLine(c);
         }
@@ -310,38 +352,37 @@ unsafe class TestPrinter
         c.Connect(1, 3, 5, .5); 
         c.Connect(3, 2, 5, .5); 
         c.Connect(2, 0, 5, .5);
-        Console.WriteLine(c);
 
-        EulerMethod euler = new EulerMethod(); 
+        Console.WriteLine("Instanciating Newmark's integration method");
+        NewmarkMethod newmark = new NewmarkMethod(); 
         double dt = 0.01;
-        double time = 0.0 ;
+        double time = 0.0;
 
         Console.WriteLine("Instanciating an upward push on mass m1 (top left vertex): ");
         Push push = new Push([m1], new Vector3D(0, 0, 5), 0.0, 0.015); 
-        List<ExternalForce> externalForces = [push];
-        Console.WriteLine("Simulating the system for one tenth of a second: ");
-        for (int n = 0; n < 10; n++)
-        {
-            time += dt;
-            foreach (Mass m in c.GetMasses())
+
+        Console.WriteLine("Initializing the system: ");
+        foreach (Mass m in c.GetMasses())
             {
                 m.SetInnerForce();
-                Vector3D totalExternalForce = new Vector3D();
-                foreach (ExternalForce externalForce in externalForces) 
-                {
-                    if (externalForce.Applies(m, time)) {totalExternalForce += externalForce.Force(m, time);}
-                }                
-                m.AddExternalForce(totalExternalForce);
+                if (push.Applies(m, time)) {m.AddExternalForce(push.Force(m, time));}
             }
+        Console.WriteLine("t = " + time);
+        Console.WriteLine(c);
+
+        Console.WriteLine("Simulating the system for half a second: ");
+        for (int n = 0; n < 50; n++)
+        {
             foreach (Mass m in c.GetMasses())
             {
-                m.UpdateVelocityPosition(euler, dt); 
+                newmark.UpdateForceVelocityPosition(m, [push], time, dt);
             }
+            time += dt;
             Console.WriteLine("t = " + time);
             Console.WriteLine(c);
         }
     }
-    
+
     public static void TestPhysicalSystem()
     {
         Console.WriteLine("TESTING PhysicalSystem");
@@ -355,27 +396,29 @@ unsafe class TestPrinter
         c.Connect(1, 3, 5, .5); 
         c.Connect(3, 2, 5, .5); 
         c.Connect(2, 0, 5, .5);
-        Console.WriteLine(c);        
 
-        Console.WriteLine("Instanciating a hook on mass m1 (top left vertex)");
+        Console.WriteLine("Instanciating Newmark's integration method");
+        NewmarkMethod newmark = new NewmarkMethod(); 
+        double dt = 0.01;
+
+        Console.WriteLine("Instanciating a hook on the top left vertex)");
         Hook hook = new Hook([m1]); 
-        Console.WriteLine("Instanciating an upward push on mass m4 (bottom right vertex)");
-        Push push = new Push([m4], new Vector3D(0, 0, 5), 0.0, 0.015); 
+        Console.WriteLine("Instanciating an upward push on the bottom right vertex)");
+        Push push = new Push([m4], new Vector3D(0, 0, 50), 0.0, 0.015); 
         Console.WriteLine("Instanciating a perpetual wind of velocity (0, 1, 0)");
         Drag wind = new Drag(new Vector3D(0, 1, 0)); 
-        Console.WriteLine("Instanciating a perpetual downwards constant force with no start and no end");
+        Console.WriteLine("Instanciating a perpetual downwards constant force");
         ConstantForce gravity = new ConstantForce(new Vector3D(0, 0, -9.81)); 
 
         Console.WriteLine("Instanciating a physical system with the above-mentioned piece of cloth and external forces");
         PhysicalSystem system = new PhysicalSystem([c], [hook, push, wind, gravity]);
 
-        EulerMethod euler = new EulerMethod(); 
-        double dt = 0.01;
-
-        Console.WriteLine("Simulating the system for one tenth of a second: ");
-        for (int n = 0; n < 10; n++)
+        Console.WriteLine("Initializing and simulating the system for half a second: ");
+        system.Initialize();
+        Console.WriteLine(system);
+        for (int n = 0; n < 50; n++)
         {
-            system.Update(euler, dt);
+            system.Update(newmark, dt);
             Console.WriteLine(system);
         }
     }
