@@ -1,0 +1,41 @@
+namespace NewmarkMethod{
+using Vector3D;
+using IntegrationMethod;
+using ExternalForce;
+using Mass;
+using System.Collections.Generic;
+
+class NewmarkMethod : IntegrationMethod
+{
+    private readonly float gamma;
+    private readonly float beta;
+    private readonly float epsilon;
+    private readonly int maxIterations;
+
+
+    public NewmarkMethod(float gamma_ = .5f, float beta_ = .6f, float epsilon_ = 1e-10f, int maxIterations_ = 100) 
+    {
+        gamma = gamma_;
+        beta = beta_;
+        epsilon = epsilon_;
+        maxIterations = maxIterations_;
+    }
+
+    public override void UpdateForceVelocityPosition(Mass m, List<ExternalForce> externalForces, float time, float dt)
+    {
+        int iterations = 0;
+        Vector3D auxPos;
+        Vector3D oldPos= new Vector3D(m.GetPosition());
+        Vector3D oldVel = new Vector3D(m.GetVelocity());
+        Vector3D oldAcc = new Vector3D(m.Acceleration());
+        do{
+            auxPos = m.GetPosition();
+            iterations += 1;
+            base.UpdateForce(m, externalForces, time);
+            m.SetVelocity(oldVel + dt*((1 - gamma)*oldAcc + gamma*m.Acceleration()));
+            m.SetPosition(oldPos + dt*oldVel + dt*dt*0.5f*((1 - 2*beta)*oldAcc + 2*beta*m.Acceleration()));
+        }while ((m.GetPosition() - auxPos).Norm() > epsilon && iterations < maxIterations);
+        base.UpdateForce(m, externalForces, time);
+    }
+}
+}
