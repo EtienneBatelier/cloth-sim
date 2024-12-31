@@ -17,6 +17,7 @@ using Push;
 using Drag;
 using ClothPiece;
 using ExternalForce;
+using Sewer;
 
 public class Main : MonoBehaviour
 {
@@ -36,34 +37,17 @@ public class Main : MonoBehaviour
 
     void Start()
     {
-        float radius = .5f;
-        List<Mass> masses = new List<Mass>{};
-        for (int i = 0; i < 20; i++)
-        {
-            for (int j = 0; j < 20; j++)
-            {
-                masses.Add(new MassGraphicalUnity(0.1f, 2f, new Vector3D(i, j, 10), radius));
-            }
-        }
-        ClothPiece clothPiece = new ClothPiece(masses); 
-        float dist;
-        for (int a = 0; a < clothPiece.masses.Count; a++)
-        {
-            for (int b = 0; b < clothPiece.masses.Count; b++)
-            {
-                dist = (clothPiece.masses[a].GetPosition() - clothPiece.masses[b].GetPosition()).SquaredNorm();
-                if (0 < dist && dist < 1.1f) {clothPiece.Connect(a, b, 10f, 1f);}
-            }
-        }
-
-        Hook hook = new Hook(new List<Mass>{clothPiece.masses[0], clothPiece.masses[19], clothPiece.masses[380], clothPiece.masses[399]});
         //Push push = new Push(new List<Mass>{clothPiece.masses[150]}, new Vector3D(0, 0, 50), 0.0, 0.055);
-        //Drag wind = new Drag(new Vector3D(0, 10, 0), 0.1f, 0, 22);
-        Gravity gravity = new Gravity(new Vector3D(0, 0, (float) -3));
+        Drag wind = new Drag(new Vector3D(0, 3, 0), 1f, 5, 10);
+        Drag ambientAir = new Drag(new Vector3D(0, 0, 0), 1f);
+        Gravity gravity = new Gravity(new Vector3D(0, 0, (float) -1f));
 
-        physicalSystem = new PhysicalSystem(new List<ClothPiece>{clothPiece}, new List<ExternalForce>{hook, gravity});
-        intMeth = new NewmarkMethod();
-        dt = (float) 0.06;
+        List<string> hookTypes = new List<string>{"firstSide", "thirdCorner"};
+        (ClothPiece clothPiece, Hook hook) = Sewer.HookedRectangle(10, 15, new Vector3D(0, 0, 5), new Vector3D(1, 1, 7), hookTypes);
+
+        physicalSystem = new PhysicalSystem(new List<ClothPiece>{clothPiece}, new List<ExternalForce>{hook, ambientAir, wind, gravity});
+        intMeth = new BackwardEulerMethod();
+        dt = (float) 0.1;
 
         physicalSystem.Initialize();
     }

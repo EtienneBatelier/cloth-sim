@@ -11,6 +11,8 @@ class Hook : ExternalForce
 
     //Constructors
 
+    public Hook() {base.start = null; base.end = 0; affectedMasses = new List<Mass>{};}
+
     public Hook(List<Mass> affectedMasses_, float? start_ = null, float? end_ = null) 
     {
         base.start = start_;
