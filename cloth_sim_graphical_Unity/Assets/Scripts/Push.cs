@@ -13,7 +13,7 @@ class Push : ExternalForce
 
     //Construtors 
 
-    public Push(List<Mass> affectedMasses_, Vector3D force_, double? start_ = null, double? end_ = null) 
+    public Push(List<Mass> affectedMasses_, Vector3D force_, float? start_ = null, float? end_ = null) 
     {
         force = force_;
         affectedMasses = affectedMasses_;
@@ -21,7 +21,7 @@ class Push : ExternalForce
         base.end = end_;
     }
 
-    public Push(Vector3D center, double radius, List<ClothPiece> clothPieces, Vector3D force_, double? start_ = null, double? end_ = null) 
+    public Push(Vector3D center, float radius, List<ClothPiece> clothPieces, Vector3D force_, float? start_ = null, float? end_ = null) 
     {
         force = force_;
         base.start = start_;
@@ -39,8 +39,8 @@ class Push : ExternalForce
 
     //Other methods
 
-    public override bool Applies(Mass m , double time) {return base.InTimeInterval(time) && affectedMasses.Contains(m);} 
-    public override Vector3D Force(Mass m, double time) {return new Vector3D(force);}
+    public override bool Applies(Mass m , float time) {return base.InTimeInterval(time) && affectedMasses.Contains(m);} 
+    public override Vector3D Force(Mass m, float time) {return new Vector3D(force);}
 }
 }
 
