@@ -12,6 +12,7 @@ class ClothPiece
     //Constructor
 
     public ClothPiece(List<Mass> masses_) {masses = masses_; springs = new List<Spring>();}
+    public ClothPiece() {masses = new List<Mass>(); springs = new List<Spring>();}
 
 
     //Get and ToString() methods

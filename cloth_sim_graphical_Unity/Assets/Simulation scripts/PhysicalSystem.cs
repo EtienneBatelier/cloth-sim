@@ -61,13 +61,13 @@ class PhysicalSystem
         }
     }
 
-    public void Update(IntegrationMethod intMeth, float dt)
+    public void Update(IntegrationMethod integrationMethod, float dt)
     {
         foreach (ClothPiece c in clothPieces)
         {
             foreach (Mass m in c.GetMasses())
             {
-                intMeth.UpdateForceVelocityPosition(m, externalForces, time, dt); 
+                integrationMethod.UpdateForceVelocityPosition(m, externalForces, time, dt); 
             }
         }
         time += dt;

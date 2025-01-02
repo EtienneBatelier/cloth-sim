@@ -3,26 +3,21 @@ using UnityEngine;
 using Mass;
 using Vector3D;
 
-class MassGraphicalUnity : Mass
+unsafe class MassGraphicalUnity : Mass
 {
     public GameObject sphere;
 
 
     //Constructors
 
-    public MassGraphicalUnity()
-    {
-        sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-    }
-
-    public MassGraphicalUnity(float mass_, float penetrationCoef_, Vector3D position_) : base(mass_, penetrationCoef_, position_)
+    public MassGraphicalUnity(float* mass_, float* penetrationCoef_, Vector3D position_) : base(mass_, penetrationCoef_, position_)
     {
         sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
         float[] vector = position_.GetVector();
         sphere.transform.position = new Vector3(vector[0], vector[2], vector[1]); //Switching second and third coordinates
     }
 
-    public MassGraphicalUnity(float mass_, float penetrationCoef_, Vector3D position_, float radius) : base(mass_, penetrationCoef_, position_)
+    public MassGraphicalUnity(float* mass_, float* penetrationCoef_, Vector3D position_, float radius) : base(mass_, penetrationCoef_, position_)
     {
         sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
         float[] vector = position_.GetVector();
@@ -35,5 +30,14 @@ class MassGraphicalUnity : Mass
         float[] vector = base.position.GetVector();
         sphere.transform.position = new Vector3(vector[0], vector[2], vector[1]); //Switching second and third coordinates
     }
+
+    public void DestroySphere()
+    {
+        Object.Destroy(sphere);
+    }
+
+    //Finalizer
+
+    ~MassGraphicalUnity() {Object.Destroy(sphere);}
 }
 }

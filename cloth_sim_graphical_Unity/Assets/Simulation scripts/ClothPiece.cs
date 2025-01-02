@@ -4,7 +4,7 @@ using Mass;
 using System.Collections.Generic;
 using Spring;
 
-class ClothPiece
+unsafe class ClothPiece
 {
     public List<Mass> masses;
     private List<Spring> springs;
@@ -32,13 +32,13 @@ class ClothPiece
 
     //Other methods
 
-    public void Connect(int idx1, int idx2, float stiffness, float restLength)
+    public void Connect(int idx1, int idx2, float* stiffness, float* restLength)
     {
         springs.Add(new Spring(masses[idx1], masses[idx2], stiffness, restLength));
     }
 
-    //Testing methods
+    //Testing methods (should remain as comments)
 
-    public List<Spring> GetSprings() {return springs;}
+    //public List<Spring> GetSprings() {return springs;}
 }
 }

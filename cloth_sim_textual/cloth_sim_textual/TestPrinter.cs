@@ -10,7 +10,7 @@ using Drag;
 using Hook;
 using Push;
 using PhysicalSystem;
-using ConstantForce;
+using Gravity;
 
 class TestPrinter
 {
@@ -211,9 +211,9 @@ class TestPrinter
         }
     }
     
-    public static void TestConstantForce()
+    public static void TestGravity()
     {
-        Console.WriteLine("TESTING ConstantForce");
+        Console.WriteLine("TESTING Gravity");
         Console.WriteLine("Instanciating a piece of cloth with four masses in a square: ");
         Mass m1 = new Mass(1, .5f, new Vector3D(0, 1, 0)); 
         Mass m2 = new Mass(1, .5f, new Vector3D(1, 1, 0)); 
@@ -231,13 +231,13 @@ class TestPrinter
         float time = 0;
 
         Console.WriteLine("Instanciating a perpetual downwards constant force");
-        ConstantForce gravity = new ConstantForce(new Vector3D(0, 0, -9.81f)); 
+        Gravity gravity = new Gravity(new Vector3D(0, 0, -9.81f)); 
 
         Console.WriteLine("Initializing the system: ");
         foreach (Mass m in c.GetMasses())
             {
                 m.SetInnerForce();
-                if (gravity.Applies(m, time)) {m.AddExternalForce(gravity.Force(m, time));}
+                if (gravity.Applies(m, time)) {m.AddForce(gravity.Force(m, time));}
             }
         Console.WriteLine("t = " + time);
         Console.WriteLine(c);
@@ -281,7 +281,7 @@ class TestPrinter
         foreach (Mass m in c.GetMasses())
             {
                 m.SetInnerForce();
-                if (wind.Applies(m, time)) {m.AddExternalForce(wind.Force(m, time));}
+                if (wind.Applies(m, time)) {m.AddForce(wind.Force(m, time));}
             }
         Console.WriteLine("t = " + time);
         Console.WriteLine(c);
@@ -322,7 +322,7 @@ class TestPrinter
         foreach (Mass m in c.GetMasses())
             {
                 m.SetInnerForce();
-                if (hook.Applies(m, time)) {m.AddExternalForce(hook.Force(m, time));}
+                if (hook.Applies(m, time)) {m.AddForce(hook.Force(m, time));}
             }
         Console.WriteLine("t = " + time);
         Console.WriteLine(c);
@@ -360,13 +360,13 @@ class TestPrinter
         float time = 0;
 
         Console.WriteLine("Instanciating an upward push on mass m1 (top left vertex): ");
-        Push push = new Push(new List<Mass>{m1}, new Vector3D(0, 0, 5), 0.0, 0.015); 
+        Push push = new Push(new List<Mass>{m1}, new Vector3D(0, 0, 5), 0.0f, 0.015f); 
 
         Console.WriteLine("Initializing the system: ");
         foreach (Mass m in c.GetMasses())
             {
                 m.SetInnerForce();
-                if (push.Applies(m, time)) {m.AddExternalForce(push.Force(m, time));}
+                if (push.Applies(m, time)) {m.AddForce(push.Force(m, time));}
             }
         Console.WriteLine("t = " + time);
         Console.WriteLine(c);
@@ -405,11 +405,11 @@ class TestPrinter
         Console.WriteLine("Instanciating a hook on the top left vertex)");
         Hook hook = new Hook(new List<Mass>{m1}); 
         Console.WriteLine("Instanciating an upward push on the bottom right vertex)");
-        Push push = new Push(new List<Mass>{m4}, new Vector3D(0, 0, 50), 0.0, 0.015); 
+        Push push = new Push(new List<Mass>{m4}, new Vector3D(0, 0, 50), 0.0f, 0.015f); 
         Console.WriteLine("Instanciating a perpetual wind of velocity (0, 1, 0)");
         Drag wind = new Drag(new Vector3D(0, 1, 0)); 
         Console.WriteLine("Instanciating a perpetual downwards constant force");
-        ConstantForce gravity = new ConstantForce(new Vector3D(0, 0, -9.81f)); 
+        Gravity gravity = new Gravity(new Vector3D(0, 0, -9.81f)); 
 
         Console.WriteLine("Instanciating a physical system with the above-mentioned piece of cloth and external forces");
         PhysicalSystem system = new PhysicalSystem(new List<ClothPiece>{c}, new List<ExternalForce>{hook, push, wind, gravity});

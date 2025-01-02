@@ -4,13 +4,13 @@ using Vector3D;
 
 class ExternalForce
 {   
-    protected double? start; 
-    protected double? end; 
+    protected float? start; 
+    protected float? end; 
     public ExternalForce() {}
-    public virtual bool Applies(Mass m, double time) {return false;} 
-    public virtual Vector3D Force(Mass m, double time) {return new Vector3D();}
+    public virtual bool Applies(Mass m, float time) {return false;} 
+    public virtual Vector3D Force(Mass m, float time) {return new Vector3D();}
 
-    protected bool InTimeInterval(double time)
+    protected bool InTimeInterval(float time)
     {
         if (start == null)
         {

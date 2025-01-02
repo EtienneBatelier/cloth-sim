@@ -11,14 +11,16 @@ class Hook : ExternalForce
 
     //Constructors
 
-    public Hook(List<Mass> affectedMasses_, double? start_ = null, double? end_ = null) 
+    public Hook() {base.start = null; base.end = 0; affectedMasses = new List<Mass>{};}
+
+    public Hook(List<Mass> affectedMasses_, float? start_ = null, float? end_ = null) 
     {
         base.start = start_;
         base.end = end_;
         affectedMasses = affectedMasses_;
     }
 
-    public Hook(Vector3D center, double radius, List<ClothPiece> clothPieces, double? start_ = null, double? end_ = null) 
+    public Hook(Vector3D center, float radius, List<ClothPiece> clothPieces, float? start_ = null, float? end_ = null) 
     {
         base.start = start_;
         base.end = end_;
@@ -34,7 +36,7 @@ class Hook : ExternalForce
 
     //Other methods
 
-    public override bool Applies(Mass m , double time) {return base.InTimeInterval(time) && affectedMasses.Contains(m);} 
-    public override Vector3D Force(Mass m, double time) {return new Vector3D(-m.GetForce());}
+    public override bool Applies(Mass m , float time) {return base.InTimeInterval(time) && affectedMasses.Contains(m);} 
+    public override Vector3D Force(Mass m, float time) {return new Vector3D(-m.GetForce());}
 }
 }

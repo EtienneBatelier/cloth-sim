@@ -56,10 +56,7 @@ class PhysicalSystem
             foreach (Mass m in c.GetMasses())
             {
                 m.SetInnerForce();
-                foreach (ExternalForce externalForce in externalForces) 
-                {
-                    if (externalForce.Applies(m, time)) {m.AddExternalForce(externalForce.Force(m, time));}
-                }                
+                IntegrationMethod.UpdateForce(m, externalForces, time); 
             }
         }
     }

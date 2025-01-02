@@ -4,11 +4,9 @@ using Vector3D;
 using Hook;
 using System;
 using Mass;
-using MassGraphicalUnity;
 using System.Collections.Generic;
-    using System.IO.Compression;
 
-    static class Sewer
+static class Sewer
 {
     private static (Vector3D, Vector3D, Vector3D) normalVectorToOrthogonalMatrix(Vector3D normalToPlane)
     {
@@ -55,7 +53,7 @@ using System.Collections.Generic;
         {
             for (int j = 0; j < b; j++)
             {
-                masses.Add(new MassGraphicalUnity(1f, 1f, center + matrixVectorMult(firstColumn, secondColumn, thirdColumn, new Vector3D(i - a/2.0f, j - b/2.0f, 0)), 1.2f));
+                masses.Add(new Mass(1f, 1f, center + matrixVectorMult(firstColumn, secondColumn, thirdColumn, new Vector3D(i - a/2.0f, j - b/2.0f, 0))));
             }
         }
         ClothPiece clothPiece = new ClothPiece(masses);

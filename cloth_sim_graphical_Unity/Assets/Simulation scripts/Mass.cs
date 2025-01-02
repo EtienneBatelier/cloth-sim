@@ -3,10 +3,10 @@ using Vector3D;
 using Spring;
 using System.Collections.Generic;
 
-class Mass
+unsafe class Mass
 {
-    protected float mass;
-    protected float dampingCoefficient;
+    protected float* mass;
+    protected float* dampingCoefficient;
     protected Vector3D position;
     protected Vector3D velocity; 
     protected Vector3D force; 
@@ -15,18 +15,7 @@ class Mass
 
     //Constructors
 
-
-    public Mass()
-    {
-        mass = 1;
-        dampingCoefficient = .5f;
-        position = new Vector3D(); 
-        velocity = new Vector3D(); 
-        force = new Vector3D(); 
-        associatedSprings = new List<Spring>();
-    }
-
-    public Mass(float mass_, float dampingCoefficient_, Vector3D position_)
+    public Mass(float* mass_, float* dampingCoefficient_, Vector3D position_)
     {
         mass = mass_;
         dampingCoefficient = dampingCoefficient_;
@@ -36,7 +25,7 @@ class Mass
         associatedSprings = new List<Spring>();
     }
 
-    public Mass(float mass_, float dampingCoefficient_, Vector3D position_, Vector3D velocity_, Vector3D force_, List<Spring> associatedSprings_)
+    public Mass(float* mass_, float* dampingCoefficient_, Vector3D position_, Vector3D velocity_, Vector3D force_, List<Spring> associatedSprings_)
     {
         mass = mass_;
         dampingCoefficient = dampingCoefficient_;
@@ -47,21 +36,11 @@ class Mass
         foreach (Spring associatedSpring_ in associatedSprings_) associatedSprings.Add(associatedSpring_); 
     }
 
-    public Mass(Mass mass_)
-    {
-        mass = mass_.GetMass();
-        dampingCoefficient = mass_.GetDampingCoefficient();
-        position = mass_.GetPosition();
-        velocity = new Vector3D();
-        force = new Vector3D();
-        associatedSprings = new List<Spring>();
-    }
-
 
     //Get and ToString() methods
 
-    public float GetMass() {return mass;}
-    public float GetDampingCoefficient() {return dampingCoefficient;}
+    public float GetMass() {return *mass;}
+    public float GetDampingCoefficient() {return *dampingCoefficient;}
     public Vector3D GetPosition() {return new Vector3D(position);}
     public Vector3D GetVelocity() {return new Vector3D(velocity);}
     public Vector3D GetForce() {return new Vector3D(force);}
@@ -79,7 +58,7 @@ class Mass
 
     public void SetInnerForce() 
     {
-        force.SetVector(-dampingCoefficient*velocity);
+        force.SetVector(- *dampingCoefficient*velocity);
         foreach (Spring spring in associatedSprings)
         {
             force.Add(spring.SpringForce(this));
@@ -90,7 +69,7 @@ class Mass
     //Other methods
 
     public float Speed() {return velocity.Norm();}
-    public Vector3D Acceleration() {return force*(1.0f/mass);}
+    public Vector3D Acceleration() {return force*(1.0f / *mass);}
     public void Attach(Spring spring) {associatedSprings.Add(spring);} 
     public void AddToPosition(Vector3D dPosition) {position.Add(dPosition);}
     public void AddToVelocity(Vector3D dVelocity) {position.Add(dVelocity);}
@@ -98,7 +77,7 @@ class Mass
     
     public Vector3D InnerForce()
     {
-        Vector3D force_ = -dampingCoefficient*velocity;
+        Vector3D force_ = - *dampingCoefficient*velocity;
         foreach (Spring spring in associatedSprings)
         {
             force_ += spring.SpringForce(this);

@@ -1,5 +1,4 @@
 namespace EulerMethod{
-using Vector3D; 
 using IntegrationMethod; 
 using Mass;
 using System.Collections.Generic;
@@ -13,7 +12,7 @@ class EulerMethod: IntegrationMethod
     {
         m.SetPosition(m.GetPosition() + dt*m.GetVelocity());
         m.SetVelocity(m.GetVelocity() + dt*m.Acceleration());
-        base.UpdateForce(m, externalForces, time);
+        IntegrationMethod.UpdateForce(m, externalForces, time);
     }
 }
 }
