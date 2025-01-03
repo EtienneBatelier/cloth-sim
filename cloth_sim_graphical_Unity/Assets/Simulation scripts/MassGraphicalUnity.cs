@@ -38,6 +38,6 @@ unsafe class MassGraphicalUnity : Mass
 
     //Finalizer
 
-    ~MassGraphicalUnity() {Object.Destroy(sphere);}
+    ~MassGraphicalUnity() {DestroySphere();}
 }
 }

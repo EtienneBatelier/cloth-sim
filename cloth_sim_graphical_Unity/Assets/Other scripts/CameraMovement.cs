@@ -19,7 +19,7 @@ public class CameraMovement : MonoBehaviour {
     {
         //Mouse commands
         lastMouse = Input.mousePosition - lastMouse ;
-        if (Input.GetKey (KeyCode.Mouse0))
+        if (Input.GetKey (KeyCode.Mouse1))
         {
             lastMouse = new Vector3(-lastMouse.y * camSens, lastMouse.x * camSens, 0 );
             lastMouse = new Vector3(transform.eulerAngles.x + lastMouse.x , transform.eulerAngles.y + lastMouse.y, 0);

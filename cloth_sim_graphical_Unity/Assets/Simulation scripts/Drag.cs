@@ -12,7 +12,7 @@ unsafe class Drag : ExternalForce
 
     //Constructor
 
-    public Drag(Vector3* windVelocity_, float dragFactor_ = 1f, float? start_ = null, float? end_ = null) 
+    public Drag(Vector3* windVelocity_, float dragFactor_ = .5f, float? start_ = null, float? end_ = null) 
     {
         windVelocity = windVelocity_;
         dragFactor = dragFactor_;

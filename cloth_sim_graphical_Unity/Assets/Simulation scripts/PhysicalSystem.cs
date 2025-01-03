@@ -8,9 +8,9 @@ using System.Collections.Generic;
 
 class PhysicalSystem
 {
-    public readonly List<ClothPiece> clothPieces;
-    private readonly List<ExternalForce> externalForces;
-    public float time;
+    public List<ClothPiece> clothPieces;
+    public List<ExternalForce> externalForces;
+    private float time;
 
 
     //Constructor
@@ -20,14 +20,7 @@ class PhysicalSystem
         clothPieces = clothPieces_;
         time = initialTime;
         externalForces = externalForces_;
-        for (int i = externalForces.Count - 1; i > -1; i--)
-        {
-            if (externalForces[i] is Hook) 
-            {
-                externalForces.Add(externalForces[i]);
-                externalForces.RemoveAt(i);
-            }
-        }
+        TidyExternalForces();
     }
 
 
@@ -48,6 +41,19 @@ class PhysicalSystem
 
 
     //Other methods
+
+
+    public void TidyExternalForces()
+    {
+        for (int i = externalForces.Count - 1; i > -1; i--)
+        {
+            if (externalForces[i] is Hook) 
+            {
+                externalForces.Add(externalForces[i]);
+                externalForces.RemoveAt(i);
+            }
+        }
+    }
 
     public void Initialize()
     {
