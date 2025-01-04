@@ -20,6 +20,7 @@ class Hook : ExternalForce
         affectedMasses = affectedMasses_;
     }
 
+    //Use this constructor to hook all the masses in a spherical area. 
     public Hook(Vector3D center, float radius, List<ClothPiece> clothPieces, float? start_ = null, float? end_ = null) 
     {
         base.start = start_;

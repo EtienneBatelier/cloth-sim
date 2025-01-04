@@ -13,7 +13,6 @@ using NewmarkMethod;
 using EulerMethod;
 using RungeKuttaMethod;
 using BackwardEulerMethod;
-using Push;
 using Drag;
 using ClothPiece;
 using ClothPieceGraphicalUnity;
@@ -21,6 +20,7 @@ using SpringGraphicalUnity;
 using ExternalForce;
 using Sewer;
 
+//Main script, to link to an empty Unity GameObject. 
 public unsafe class ClothSim : MonoBehaviour
 {
     PhysicalSystem physicalSystem;
@@ -66,7 +66,6 @@ public unsafe class ClothSim : MonoBehaviour
         {
             foreach (ClothPiece clothPiece in physicalSystem.clothPieces)
             {
-                foreach (MassGraphicalUnity mass in clothPiece.masses) {mass.DestroySphere();} 
                 foreach (SpringGraphicalUnity spring in clothPiece.springs) {spring.DestroyGameObject();} 
             }
             

@@ -5,13 +5,14 @@ using ExternalForce;
 using Mass;
 using System.Collections.Generic;
 
+//An implementation of Euler's backward, implicit integration method. 
 class BackwardEulerMethod : IntegrationMethod
 {
     private readonly float epsilonSquared;
     private readonly int maxIterations;
 
 
-    public BackwardEulerMethod(float epsilon_ = 1e-4f, int maxIterations_ = 100) {epsilonSquared = epsilon_*epsilon_;; maxIterations = maxIterations_;}
+    public BackwardEulerMethod(float epsilon_ = 1e-3f, int maxIterations_ = 100) {epsilonSquared = epsilon_*epsilon_; maxIterations = maxIterations_;}
 
     public override void UpdateForceVelocityPosition(Mass m, List<ExternalForce> externalForces, float time, float dt)
     {

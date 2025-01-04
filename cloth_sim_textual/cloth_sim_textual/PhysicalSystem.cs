@@ -6,11 +6,13 @@ using Mass;
 using Hook;
 using System.Collections.Generic;
 
+//A class with a List of ClothPieces and a List of ExternalForces. 
+//Contains the methods needed to couple it with an IntegrationMethod and run the simulation. 
 class PhysicalSystem
 {
-    public readonly List<ClothPiece> clothPieces;
-    private readonly List<ExternalForce> externalForces;
-    public float time;
+    public List<ClothPiece> clothPieces;
+    public List<ExternalForce> externalForces;
+    private float time;
 
 
     //Constructor
@@ -20,14 +22,7 @@ class PhysicalSystem
         clothPieces = clothPieces_;
         time = initialTime;
         externalForces = externalForces_;
-        for (int i = externalForces.Count - 1; i > -1; i--)
-        {
-            if (externalForces[i] is Hook) 
-            {
-                externalForces.Add(externalForces[i]);
-                externalForces.RemoveAt(i);
-            }
-        }
+        TidyExternalForces();
     }
 
 
@@ -49,6 +44,19 @@ class PhysicalSystem
 
     //Other methods
 
+
+    public void TidyExternalForces()
+    {
+        for (int i = externalForces.Count - 1; i > -1; i--)
+        {
+            if (externalForces[i] is Hook) 
+            {
+                externalForces.Add(externalForces[i]);
+                externalForces.RemoveAt(i);
+            }
+        }
+    }
+
     public void Initialize()
     {
         foreach (ClothPiece c in clothPieces)
@@ -61,13 +69,13 @@ class PhysicalSystem
         }
     }
 
-    public void Update(IntegrationMethod intMeth, float dt)
+    public void Update(IntegrationMethod integrationMethod, float dt)
     {
         foreach (ClothPiece c in clothPieces)
         {
             foreach (Mass m in c.GetMasses())
             {
-                intMeth.UpdateForceVelocityPosition(m, externalForces, time, dt); 
+                integrationMethod.UpdateForceVelocityPosition(m, externalForces, time, dt); 
             }
         }
         time += dt;

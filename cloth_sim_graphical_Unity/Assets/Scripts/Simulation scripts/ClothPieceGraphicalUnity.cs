@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using ClothPiece;
 using SpringGraphicalUnity;
 using Mass;
-using MassGraphicalUnity;
 
 unsafe class ClothPieceGraphicalUnity : ClothPiece
 {
@@ -23,7 +22,6 @@ unsafe class ClothPieceGraphicalUnity : ClothPiece
 
     public void UpdateGraphicalPosition()
     {
-        foreach (MassGraphicalUnity mass in base.masses) {mass.UpdateGraphicalPosition();}
         foreach (SpringGraphicalUnity spring in base.springs) {spring.UpdateGraphicalPosition();}
     }
 }

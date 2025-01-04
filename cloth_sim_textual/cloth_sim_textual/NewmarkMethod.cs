@@ -5,6 +5,7 @@ using ExternalForce;
 using Mass;
 using System.Collections.Generic;
 
+//An implementation of Newmark's integration method. 
 class NewmarkMethod : IntegrationMethod
 {
     private readonly float gamma;

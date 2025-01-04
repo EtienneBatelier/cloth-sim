@@ -12,8 +12,15 @@ using Push;
 using PhysicalSystem;
 using Gravity;
 
-class TestPrinter
+unsafe static class TestPrinter
 {
+    static float mass = 0.1f;
+    static float dampingCoefficient = 0.5f;
+    static float restLength = 1;
+    static float stiffness = 10;
+    static Vector3D gravitationalField = new Vector3D(0, 0, -1);
+    static Vector3D windVelocity = new Vector3D(0, 1, 0);    
+
     public static void TestVector3D()
     {
         Console.WriteLine("TESTING Vector3D");
@@ -72,11 +79,12 @@ class TestPrinter
         Console.WriteLine("TESTING Mass and Spring");
         Console.WriteLine("Requires the commented testing methods in Mass.cs");
         Console.WriteLine("Instanciating three masses connected by two spring in a chain: ");
-        Mass m1 = new Mass(1, .5f, new Vector3D(-1, 0, 0)); 
-        Mass m2 = new Mass(1, .5f, new Vector3D(0, 0, 0)); 
-        Mass m3 = new Mass(1, .5f, new Vector3D(1, 0, 0));
-        Spring s1 = new Spring(m1, m2, 5, 2); 
-        Spring s2 = new Spring(m2, m3, 5, 2);
+        fixed (float* massPtr = &mass, dampingCoefficientPtr = &dampingCoefficient, stiffnessPtr = &stiffness, restLengthPtr = &restLength){
+        Mass m1 = new Mass(massPtr, dampingCoefficientPtr, new Vector3D(-1, 0, 0)); 
+        Mass m2 = new Mass(massPtr, dampingCoefficientPtr, new Vector3D(0, 0, 0)); 
+        Mass m3 = new Mass(massPtr, dampingCoefficientPtr, new Vector3D(1, 0, 0));
+        Spring s1 = new Spring(m1, m2, stiffnessPtr, restLengthPtr); 
+        Spring s2 = new Spring(m2, m3, stiffnessPtr, restLengthPtr);
         Console.Write(m1.ToString() + " and is connected to ");
         //foreach (Spring spring in m1.GetAssociatedSprings()) {Console.Write(spring + " ");}
         Console.WriteLine("");
@@ -93,17 +101,19 @@ class TestPrinter
         Console.WriteLine(m1.ToString() + " is subject to force " + m1.GetForce());
         Console.WriteLine(m1.ToString() + " is subject to force " + m2.GetForce());
         Console.WriteLine(m1.ToString() + " is subject to force " + m3.GetForce());
+        }
     }
 
     public static void TestEulerMethod()
     {
         Console.WriteLine("TESTING EulerMethod");
         Console.WriteLine("Instanciating three masses connected by two springs in an L shape");
-        Mass m1 = new Mass(1, .5f, new Vector3D(0, 1, 0)); 
-        Mass m2 = new Mass(1, .5f, new Vector3D(0, 0, 0));
-        Mass m3 = new Mass(1, .5f, new Vector3D(1, 0, 0));
-        Spring s1 = new Spring(m1, m2, 5, .5f);
-        Spring s2 = new Spring(m2, m3, 5, .5f); 
+        fixed (float* massPtr = &mass, dampingCoefficientPtr = &dampingCoefficient, stiffnessPtr = &stiffness, restLengthPtr = &restLength){
+        Mass m1 = new Mass(massPtr, dampingCoefficientPtr, new Vector3D(0, 1, 0)); 
+        Mass m2 = new Mass(massPtr, dampingCoefficientPtr, new Vector3D(0, 0, 0));
+        Mass m3 = new Mass(massPtr, dampingCoefficientPtr, new Vector3D(1, 0, 0));
+        Spring s1 = new Spring(m1, m2, stiffnessPtr, restLengthPtr);
+        Spring s2 = new Spring(m2, m3, stiffnessPtr, restLengthPtr); 
 
         Console.WriteLine("Instanciating Euler's integration method");
         EulerMethod euler = new EulerMethod(); 
@@ -131,17 +141,19 @@ class TestPrinter
             Console.WriteLine(m2);
             Console.WriteLine(m3);
         }
+        }
     }
 
     public static void TestNewmarkMethod()
     {
         Console.WriteLine("TESTING NewmarkMethod");
         Console.WriteLine("Instanciating three masses connected by two springs in an L shape");
-        Mass m1 = new Mass(1, .5f, new Vector3D(0, 1, 0)); 
-        Mass m2 = new Mass(1, .5f, new Vector3D(0, 0, 0));
-        Mass m3 = new Mass(1, .5f, new Vector3D(1, 0, 0));
-        Spring s1 = new Spring(m1, m2, 5, .5f);
-        Spring s2 = new Spring(m2, m3, 5, .5f);
+        fixed (float* massPtr = &mass, dampingCoefficientPtr = &dampingCoefficient, stiffnessPtr = &stiffness, restLengthPtr = &restLength){
+        Mass m1 = new Mass(massPtr, dampingCoefficientPtr, new Vector3D(0, 1, 0)); 
+        Mass m2 = new Mass(massPtr, dampingCoefficientPtr, new Vector3D(0, 0, 0));
+        Mass m3 = new Mass(massPtr, dampingCoefficientPtr, new Vector3D(1, 0, 0));
+        Spring s1 = new Spring(m1, m2, stiffnessPtr, restLengthPtr);
+        Spring s2 = new Spring(m2, m3, stiffnessPtr, restLengthPtr);
 
         Console.WriteLine("Instanciating Newmark's integration method");
         NewmarkMethod newmark = new NewmarkMethod(); 
@@ -169,21 +181,23 @@ class TestPrinter
             Console.WriteLine(m2);
             Console.WriteLine(m3);
         }
+        }
     }
 
     public static void TestClothPiece()
     {
         Console.WriteLine("TESTING ClothPiece");
         Console.WriteLine("Instanciating a piece of cloth with four masses in a square: ");
-        Mass m1 = new Mass(1, .5f, new Vector3D(0, 1, 0)); 
-        Mass m2 = new Mass(1, .5f, new Vector3D(1, 1, 0)); 
-        Mass m3 = new Mass(1, .5f, new Vector3D(0, 0, 0));
-        Mass m4 = new Mass(1, .5f, new Vector3D(1, 0, 0));
+        fixed (float* massPtr = &mass, dampingCoefficientPtr = &dampingCoefficient, stiffnessPtr = &stiffness, restLengthPtr = &restLength){
+        Mass m1 = new Mass(massPtr, dampingCoefficientPtr, new Vector3D(0, 1, 0)); 
+        Mass m2 = new Mass(massPtr, dampingCoefficientPtr, new Vector3D(1, 1, 0)); 
+        Mass m3 = new Mass(massPtr, dampingCoefficientPtr, new Vector3D(0, 0, 0));
+        Mass m4 = new Mass(massPtr, dampingCoefficientPtr, new Vector3D(1, 0, 0));
         ClothPiece c = new ClothPiece(new List<Mass>{m1, m2, m3, m4}); 
-        c.Connect(0, 1, 5, .5f); 
-        c.Connect(1, 3, 5, .5f); 
-        c.Connect(3, 2, 5, .5f); 
-        c.Connect(2, 0, 5, .5f);
+        c.Connect(0, 1, stiffnessPtr, restLengthPtr); 
+        c.Connect(1, 3, stiffnessPtr, restLengthPtr); 
+        c.Connect(3, 2, stiffnessPtr, restLengthPtr); 
+        c.Connect(2, 0, stiffnessPtr, restLengthPtr);
 
         Console.WriteLine("Instanciating Newmark's integration method");
         NewmarkMethod newmark = new NewmarkMethod(); 
@@ -209,21 +223,23 @@ class TestPrinter
             Console.WriteLine("t = " + time);
             Console.WriteLine(c);
         }
+        }
     }
     
     public static void TestGravity()
     {
         Console.WriteLine("TESTING Gravity");
         Console.WriteLine("Instanciating a piece of cloth with four masses in a square: ");
-        Mass m1 = new Mass(1, .5f, new Vector3D(0, 1, 0)); 
-        Mass m2 = new Mass(1, .5f, new Vector3D(1, 1, 0)); 
-        Mass m3 = new Mass(1, .5f, new Vector3D(0, 0, 0));
-        Mass m4 = new Mass(1, .5f, new Vector3D(1, 0, 0));
+        fixed (float* massPtr = &mass, dampingCoefficientPtr = &dampingCoefficient, stiffnessPtr = &stiffness, restLengthPtr = &restLength){
+        Mass m1 = new Mass(massPtr, dampingCoefficientPtr, new Vector3D(0, 1, 0)); 
+        Mass m2 = new Mass(massPtr, dampingCoefficientPtr, new Vector3D(1, 1, 0)); 
+        Mass m3 = new Mass(massPtr, dampingCoefficientPtr, new Vector3D(0, 0, 0));
+        Mass m4 = new Mass(massPtr, dampingCoefficientPtr, new Vector3D(1, 0, 0));
         ClothPiece c = new ClothPiece(new List<Mass>{m1, m2, m3, m4}); 
-        c.Connect(0, 1, 5, .5f); 
-        c.Connect(1, 3, 5, .5f); 
-        c.Connect(3, 2, 5, .5f); 
-        c.Connect(2, 0, 5, .5f);
+        c.Connect(0, 1, stiffnessPtr, restLengthPtr); 
+        c.Connect(1, 3, stiffnessPtr, restLengthPtr); 
+        c.Connect(3, 2, stiffnessPtr, restLengthPtr); 
+        c.Connect(2, 0, stiffnessPtr, restLengthPtr);
 
         Console.WriteLine("Instanciating Newmark's integration method");
         NewmarkMethod newmark = new NewmarkMethod(); 
@@ -231,7 +247,7 @@ class TestPrinter
         float time = 0;
 
         Console.WriteLine("Instanciating a perpetual downwards constant force");
-        Gravity gravity = new Gravity(new Vector3D(0, 0, -9.81f)); 
+        Gravity gravity = new Gravity(gravitationalField); 
 
         Console.WriteLine("Initializing the system: ");
         foreach (Mass m in c.GetMasses())
@@ -253,21 +269,23 @@ class TestPrinter
             Console.WriteLine("t = " + time);
             Console.WriteLine(c);
         }
+        }
     }
     
     public static void TestDrag()
     {
         Console.WriteLine("TESTING Drag");
         Console.WriteLine("Instanciating a piece of cloth with four masses in a square: ");
-        Mass m1 = new Mass(1, .5f, new Vector3D(0, 1, 0)); 
-        Mass m2 = new Mass(1, .5f, new Vector3D(1, 1, 0)); 
-        Mass m3 = new Mass(1, .5f, new Vector3D(0, 0, 0));
-        Mass m4 = new Mass(1, .5f, new Vector3D(1, 0, 0));
+        fixed (float* massPtr = &mass, dampingCoefficientPtr = &dampingCoefficient, stiffnessPtr = &stiffness, restLengthPtr = &restLength){
+        Mass m1 = new Mass(massPtr, dampingCoefficientPtr, new Vector3D(0, 1, 0)); 
+        Mass m2 = new Mass(massPtr, dampingCoefficientPtr, new Vector3D(1, 1, 0)); 
+        Mass m3 = new Mass(massPtr, dampingCoefficientPtr, new Vector3D(0, 0, 0));
+        Mass m4 = new Mass(massPtr, dampingCoefficientPtr, new Vector3D(1, 0, 0));
         ClothPiece c = new ClothPiece(new List<Mass>{m1, m2, m3, m4}); 
-        c.Connect(0, 1, 5, .5f); 
-        c.Connect(1, 3, 5, .5f); 
-        c.Connect(3, 2, 5, .5f); 
-        c.Connect(2, 0, 5, .5f);
+        c.Connect(0, 1, stiffnessPtr, restLengthPtr); 
+        c.Connect(1, 3, stiffnessPtr, restLengthPtr); 
+        c.Connect(3, 2, stiffnessPtr, restLengthPtr); 
+        c.Connect(2, 0, stiffnessPtr, restLengthPtr);
 
         Console.WriteLine("Instanciating Newmark's integration method");
         NewmarkMethod newmark = new NewmarkMethod(); 
@@ -275,7 +293,7 @@ class TestPrinter
         float time = 0;
 
         Console.WriteLine("Instanciating a perpetual wind of velocity (0, 0, 1): ");
-        Drag wind = new Drag(new Vector3D(0, 0, 1)); 
+        Drag wind = new Drag(windVelocity); 
 
         Console.WriteLine("Initializing the system: ");
         foreach (Mass m in c.GetMasses())
@@ -297,18 +315,20 @@ class TestPrinter
             Console.WriteLine("t = " + time);
             Console.WriteLine(c);
         }
+        }
     }
     
     public static void TestHook()
     {
         Console.WriteLine("TESTING Hook");
         Console.WriteLine("Instanciating a piece of cloth with three masses in an L shape: ");
-        Mass m1 = new Mass(1, .5f, new Vector3D(0, 1, 0)); 
-        Mass m2 = new Mass(1, .5f, new Vector3D(0, 0, 0));
-        Mass m3 = new Mass(1, .5f, new Vector3D(1, 0, 0));
+        fixed (float* massPtr = &mass, dampingCoefficientPtr = &dampingCoefficient, stiffnessPtr = &stiffness, restLengthPtr = &restLength){
+        Mass m1 = new Mass(massPtr, dampingCoefficientPtr, new Vector3D(0, 1, 0)); 
+        Mass m2 = new Mass(massPtr, dampingCoefficientPtr, new Vector3D(0, 0, 0));
+        Mass m3 = new Mass(massPtr, dampingCoefficientPtr, new Vector3D(1, 0, 0));
         ClothPiece c = new ClothPiece(new List<Mass>{m1, m2, m3}); 
-        c.Connect(0, 1, 5, .5f);
-        c.Connect(1, 2, 5, .5f);
+        c.Connect(0, 1, stiffnessPtr, restLengthPtr);
+        c.Connect(1, 2, stiffnessPtr, restLengthPtr);
 
         Console.WriteLine("Instanciating Newmark's integration method");
         NewmarkMethod newmark = new NewmarkMethod(); 
@@ -338,21 +358,23 @@ class TestPrinter
             Console.WriteLine("t = " + time);
             Console.WriteLine(c);
         }
+        }
     }
     
     public static void TestPush()
     {
         Console.WriteLine("TESTING Push");
         Console.WriteLine("Instanciating a piece of cloth with four masses in a square: ");
-        Mass m1 = new Mass(1, .5f, new Vector3D(0, 1, 0)); 
-        Mass m2 = new Mass(1, .5f, new Vector3D(1, 1, 0)); 
-        Mass m3 = new Mass(1, .5f, new Vector3D(0, 0, 0));
-        Mass m4 = new Mass(1, .5f, new Vector3D(1, 0, 0));
+        fixed (float* massPtr = &mass, dampingCoefficientPtr = &dampingCoefficient, stiffnessPtr = &stiffness, restLengthPtr = &restLength){
+        Mass m1 = new Mass(massPtr, dampingCoefficientPtr, new Vector3D(0, 1, 0)); 
+        Mass m2 = new Mass(massPtr, dampingCoefficientPtr, new Vector3D(1, 1, 0)); 
+        Mass m3 = new Mass(massPtr, dampingCoefficientPtr, new Vector3D(0, 0, 0));
+        Mass m4 = new Mass(massPtr, dampingCoefficientPtr, new Vector3D(1, 0, 0));
         ClothPiece c = new ClothPiece(new List<Mass>{m1, m2, m3, m4}); 
-        c.Connect(0, 1, 5, .5f); 
-        c.Connect(1, 3, 5, .5f); 
-        c.Connect(3, 2, 5, .5f); 
-        c.Connect(2, 0, 5, .5f);
+        c.Connect(0, 1, stiffnessPtr, restLengthPtr); 
+        c.Connect(1, 3, stiffnessPtr, restLengthPtr); 
+        c.Connect(3, 2, stiffnessPtr, restLengthPtr); 
+        c.Connect(2, 0, stiffnessPtr, restLengthPtr);
 
         Console.WriteLine("Instanciating Newmark's integration method");
         NewmarkMethod newmark = new NewmarkMethod(); 
@@ -382,21 +404,23 @@ class TestPrinter
             Console.WriteLine("t = " + time);
             Console.WriteLine(c);
         }
+        }
     }
 
     public static void TestPhysicalSystem()
     {
         Console.WriteLine("TESTING PhysicalSystem");
         Console.WriteLine("Instanciating a piece of cloth with four masses in a square: ");
-        Mass m1 = new Mass(1, .5f, new Vector3D(0, 1, 0)); 
-        Mass m2 = new Mass(1, .5f, new Vector3D(1, 1, 0)); 
-        Mass m3 = new Mass(1, .5f, new Vector3D(0, 0, 0));
-        Mass m4 = new Mass(1, .5f, new Vector3D(1, 0, 0));
+        fixed (float* massPtr = &mass, dampingCoefficientPtr = &dampingCoefficient, stiffnessPtr = &stiffness, restLengthPtr = &restLength){
+        Mass m1 = new Mass(massPtr, dampingCoefficientPtr, new Vector3D(0, 1, 0)); 
+        Mass m2 = new Mass(massPtr, dampingCoefficientPtr, new Vector3D(1, 1, 0)); 
+        Mass m3 = new Mass(massPtr, dampingCoefficientPtr, new Vector3D(0, 0, 0));
+        Mass m4 = new Mass(massPtr, dampingCoefficientPtr, new Vector3D(1, 0, 0));
         ClothPiece c = new ClothPiece(new List<Mass>{m1, m2, m3, m4}); 
-        c.Connect(0, 1, 5, .5f); 
-        c.Connect(1, 3, 5, .5f); 
-        c.Connect(3, 2, 5, .5f); 
-        c.Connect(2, 0, 5, .5f);
+        c.Connect(0, 1, stiffnessPtr, restLengthPtr); 
+        c.Connect(1, 3, stiffnessPtr, restLengthPtr); 
+        c.Connect(3, 2, stiffnessPtr, restLengthPtr); 
+        c.Connect(2, 0, stiffnessPtr, restLengthPtr);
 
         Console.WriteLine("Instanciating Newmark's integration method");
         NewmarkMethod newmark = new NewmarkMethod(); 
@@ -407,9 +431,9 @@ class TestPrinter
         Console.WriteLine("Instanciating an upward push on the bottom right vertex)");
         Push push = new Push(new List<Mass>{m4}, new Vector3D(0, 0, 50), 0.0f, 0.015f); 
         Console.WriteLine("Instanciating a perpetual wind of velocity (0, 1, 0)");
-        Drag wind = new Drag(new Vector3D(0, 1, 0)); 
+        Drag wind = new Drag(windVelocity); 
         Console.WriteLine("Instanciating a perpetual downwards constant force");
-        Gravity gravity = new Gravity(new Vector3D(0, 0, -9.81f)); 
+        Gravity gravity = new Gravity(gravitationalField); 
 
         Console.WriteLine("Instanciating a physical system with the above-mentioned piece of cloth and external forces");
         PhysicalSystem system = new PhysicalSystem(new List<ClothPiece>{c}, new List<ExternalForce>{hook, push, wind, gravity});
@@ -422,6 +446,7 @@ class TestPrinter
             system.Update(newmark, dt);
             Console.WriteLine(system);
         }
+    }
     }
 }
 }

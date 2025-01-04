@@ -6,6 +6,8 @@ using Mass;
 using Hook;
 using System.Collections.Generic;
 
+//A class with a List of ClothPieces and a List of ExternalForces. 
+//Contains the methods needed to couple it with an IntegrationMethod and run the simulation. 
 class PhysicalSystem
 {
     public List<ClothPiece> clothPieces;

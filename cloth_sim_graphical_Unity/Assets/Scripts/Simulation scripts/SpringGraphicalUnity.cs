@@ -4,8 +4,10 @@ using Spring;
 using Vector3D;
 using Mass;
 
+
 unsafe class SpringGraphicalUnity : Spring
 {
+    //A GameObject and a LineRenderer are the bare minimum to draw a line on the screen using Unity. 
     public GameObject gameObject;
     public LineRenderer lineRenderer;
 
@@ -17,12 +19,11 @@ unsafe class SpringGraphicalUnity : Spring
         gameObject = new GameObject();
         gameObject.AddComponent<LineRenderer>();
         lineRenderer = gameObject.GetComponent<LineRenderer>();
-        lineRenderer.positionCount = 2;
-        lineRenderer.material = new Material(Shader.Find("Legacy Shaders/Particles/Alpha Blended Premultiply"));
-        lineRenderer.startWidth = 0.05f;
+        lineRenderer.positionCount = 2;                                     //LineRenderer allows for jagged lines that connect many points. We just need two points. 
+        lineRenderer.material = new Material(Shader.Find("Unlit/Color"));   //Material and Shaders are Unity classes used to specify graphical many visual settings. 
+        lineRenderer.material.SetColor("_BaseColor", Color.white);          //We set the color of the line to white here. 
+        lineRenderer.startWidth = 0.05f;                                    //We set the width of the line to a constant 0.5.
         lineRenderer.endWidth = 0.05f;
-        lineRenderer.startColor = Color.yellow;
-        lineRenderer.endColor = Color.yellow;
     }
 
 
@@ -31,12 +32,13 @@ unsafe class SpringGraphicalUnity : Spring
     public void UpdateGraphicalPosition()
     {
         float[] vector = base.firstEnd.GetPosition().GetVector();
-        lineRenderer.SetPosition(0, new Vector3(vector[0], vector[2], vector[1]));
+        lineRenderer.SetPosition(0, new Vector3(vector[0], vector[2], vector[1]));  //Updates the position of the zeroth point in lineRenderer.
         vector = base.secondEnd.GetPosition().GetVector();
-        lineRenderer.SetPosition(1, new Vector3(vector[0], vector[2], vector[1]));
+        lineRenderer.SetPosition(1, new Vector3(vector[0], vector[2], vector[1]));  //Updates the position of the first point in lineRenderer.
     }
 
     public void DestroyGameObject() {Object.Destroy(gameObject);}
+
 
     //Finalizer
 

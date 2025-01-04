@@ -6,7 +6,7 @@ using System;
 using Mass;
 using System.Collections.Generic;
 
-static class Sewer
+unsafe static class Sewer
 {
     private static (Vector3D, Vector3D, Vector3D) normalVectorToOrthogonalMatrix(Vector3D normalToPlane)
     {
@@ -40,12 +40,10 @@ static class Sewer
     }
 
     #nullable enable
-    public static (ClothPiece, Hook) HookedRectangle(int a, int b = 0, Vector3D? center = null, Vector3D? normalToPlane = null, List<string>? hookTypes = null)
+    public static (ClothPiece, Hook) HookedRectangle(int a, int b, float* mass, float* dampingCoefficient, float* stiffness, float* restLength, Vector3D? center = null, Vector3D? normalToPlane = null, string hookInstructions = "")
     {
-        if (b == 0) {b = a;}
-        if (center is null) {center = new Vector3D(0, 0, 10);}
-        if (normalToPlane is null) {normalToPlane = new Vector3D(0, 0, 1);}
-
+        if (center is null) {center = new Vector3D(0, 0, 0);}
+        if (normalToPlane is null || normalToPlane.SquaredNorm() == 0) {normalToPlane = new Vector3D(0, 0, 1);}
         (Vector3D firstColumn, Vector3D secondColumn, Vector3D thirdColumn) = normalVectorToOrthogonalMatrix(normalToPlane);
 
         List<Mass> masses = new List<Mass>{};
@@ -53,7 +51,7 @@ static class Sewer
         {
             for (int j = 0; j < b; j++)
             {
-                masses.Add(new Mass(1f, 1f, center + matrixVectorMult(firstColumn, secondColumn, thirdColumn, new Vector3D(i - a/2.0f, j - b/2.0f, 0))));
+                masses.Add(new Mass(mass, dampingCoefficient, center + matrixVectorMult(firstColumn, secondColumn, thirdColumn, new Vector3D(i - a/2.0f, j - b/2.0f, 0))));
             }
         }
         ClothPiece clothPiece = new ClothPiece(masses);
@@ -63,49 +61,35 @@ static class Sewer
             for (int j = 0; j < clothPiece.masses.Count; j++)
             {
                 dist = (clothPiece.masses[i].GetPosition() - clothPiece.masses[j].GetPosition()).SquaredNorm();
-                if (0 < dist && dist < 1.1f) {clothPiece.Connect(i, j, 6f, 1f);}
+                if (0 < dist && dist < 1.1f) {clothPiece.Connect(i, j, stiffness, restLength);}
             }
         }
 
-
-        if (hookTypes is null) {return (clothPiece, new Hook());} 
-        List<string> hookTypesCopy = hookTypes;
         List<Mass> hookedMasses = new List<Mass>{};
-        if (hookTypes.Contains("allSides")) 
+        List<string> hookInstructionsList = new List<string>{};
+        if (hookInstructions.Contains("all sides") | hookInstructions.Contains("first side")) {hookInstructionsList.Add("firstSide");}
+        if (hookInstructions.Contains("all sides") | hookInstructions.Contains("second side")) {hookInstructionsList.Add("secondSide");}
+        if (hookInstructions.Contains("all sides") | hookInstructions.Contains("third side")) {hookInstructionsList.Add("thirdSide");}
+        if (hookInstructions.Contains("all sides") | hookInstructions.Contains("fourth side")) {hookInstructionsList.Add("fourthSide");}
+        if (hookInstructions.Contains("all corners") | hookInstructions.Contains("first corner")) {hookInstructionsList.Add("firstCorner");}
+        if (hookInstructions.Contains("all corners") | hookInstructions.Contains("second corner")) {hookInstructionsList.Add("secondCorner");}
+        if (hookInstructions.Contains("all corners") | hookInstructions.Contains("third corner")) {hookInstructionsList.Add("thirdCorner");}
+        if (hookInstructions.Contains("all corners") | hookInstructions.Contains("fourth corner")) {hookInstructionsList.Add("fourthCorner");}
+
+        foreach (string hookInstruction in hookInstructionsList)
         {
-            hookTypesCopy.Add("firstSide");
-            hookTypesCopy.Add("secondSide");
-            hookTypesCopy.Add("thirdSide");
-            hookTypesCopy.Add("fourthSide");
-        }
-        if (hookTypes.Contains("allCorners"))
-        {
-            hookTypesCopy.Add("firstCorner");
-            hookTypesCopy.Add("secondCorner");
-            hookTypesCopy.Add("thirdCorner");
-            hookTypesCopy.Add("fourthCorner");
-        }
-        foreach (string hookType in hookTypesCopy)
-        {
-            
-            if (hookType == "firstSide") {for (int i = 0; i < a; i++) {hookedMasses.Add(masses[i*b]);}}
-            if (hookType == "secondSide") {for (int j = (a-1)*b; j < a*b; j++) {hookedMasses.Add(masses[j]);}}
-            if (hookType == "thirdSide") {for (int i = 0; i < a; i++) {hookedMasses.Add(masses[b-1+i*b]);}}
-            if (hookType == "fourthSide") {for (int j = 0; j < b; j++) {hookedMasses.Add(masses[j]);}}
-            if (hookType == "firstCorner") {hookedMasses.Add(masses[0]);}
-            if (hookType == "secondCorner") {hookedMasses.Add(masses[(a-1)*b]);}
-            if (hookType == "thirdCorner") {hookedMasses.Add(masses[a*b-1]);}
-            if (hookType == "fourthCorner") {hookedMasses.Add(masses[b-1]);}
-            
+            if (hookInstruction == "firstSide") {for (int i = 0; i < a; i++) {hookedMasses.Add(masses[i*b]);}}
+            if (hookInstruction == "secondSide") {for (int j = (a-1)*b; j < a*b; j++) {hookedMasses.Add(masses[j]);}}
+            if (hookInstruction == "thirdSide") {for (int i = 0; i < a; i++) {hookedMasses.Add(masses[b-1+i*b]);}}
+            if (hookInstruction == "fourthSide") {for (int j = 0; j < b; j++) {hookedMasses.Add(masses[j]);}}
+            if (hookInstruction == "firstCorner") {hookedMasses.Add(masses[0]);}
+            if (hookInstruction == "secondCorner") {hookedMasses.Add(masses[(a-1)*b]);}
+            if (hookInstruction == "thirdCorner") {hookedMasses.Add(masses[a*b-1]);}
+            if (hookInstruction == "fourthCorner") {hookedMasses.Add(masses[b-1]);}
         }
 
-      
         Hook hook = new Hook(hookedMasses);
-        //hookType value: oneSide, twoAdjacentSides, twoOppositeSides, threeSides, allSides, corners 
         return (clothPiece, hook);
     }
-    
-
-
 }
 }

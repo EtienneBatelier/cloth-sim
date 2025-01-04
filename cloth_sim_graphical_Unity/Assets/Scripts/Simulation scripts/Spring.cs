@@ -2,6 +2,8 @@ namespace Spring{
 using Mass;
 using Vector3D;
 
+//A class to represent a spring connecting two masses. Most important method is SpringForce, 
+//returning the spring's force on a Mass using Hook's law from classical mechanics. 
 unsafe class Spring
 {
     protected readonly Mass firstEnd; 

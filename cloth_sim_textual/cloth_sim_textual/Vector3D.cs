@@ -2,7 +2,8 @@ using System;
 
 namespace Vector3D{
 
-class Vector3D
+//A class for vectors of real numbers with three entries. Similar to the widespread Vector3. 
+class Vector3D 
 {
     private float[] vector; 
 

@@ -1,8 +1,8 @@
 ﻿
-namespace cloth_sim_textual;
+namespace ClothSim;
 using TestPrinter;
 
-class Program
+class ClothSim
 {
     static void Main()
     {

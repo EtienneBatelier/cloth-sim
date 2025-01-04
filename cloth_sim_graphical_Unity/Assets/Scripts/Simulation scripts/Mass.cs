@@ -3,6 +3,8 @@ using Vector3D;
 using Spring;
 using System.Collections.Generic;
 
+//A class to represent a mass connected to several springs. 
+//The mass can calculate the force the associated spring apply on it using InnerForce/SetInnerForce. 
 unsafe class Mass
 {
     protected float* mass;

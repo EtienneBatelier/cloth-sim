@@ -8,8 +8,10 @@ using MassGraphicalUnity;
 using ClothPieceGraphicalUnity; 
 using System.Collections.Generic;
 
+//A static class to produce rectangular ClothPieces without effort. 
 unsafe static class Sewer
 {
+    //This takes a vector and completes it into an orthonormal basis of Euclidean 3-space. 
     private static (Vector3D, Vector3D, Vector3D) normalVectorToOrthogonalMatrix(Vector3D normalToPlane)
     {
         if (normalToPlane.SquaredNorm() == 0) throw new ArgumentException("Cannot find a plane that is normal to a zero vector");

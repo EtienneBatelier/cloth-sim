@@ -2,17 +2,19 @@ namespace Spring{
 using Mass;
 using Vector3D;
 
-class Spring
+//A class to represent a spring connecting two masses. Most important method is SpringForce, 
+//returning the spring's force on a Mass using Hook's law from classical mechanics. 
+unsafe class Spring
 {
-    private readonly Mass firstEnd; 
-    private readonly Mass secondEnd; 
-    private readonly float stiffness; 
-    private readonly float restLength; 
+    protected readonly Mass firstEnd; 
+    protected readonly Mass secondEnd; 
+    private float* stiffness; 
+    private float* restLength; 
 
 
     //Constructor
 
-    public Spring(Mass firstEnd_, Mass secondEnd_, float stiffness_ = 1, float restLength_ = 1)
+    public Spring(Mass firstEnd_, Mass secondEnd_, float* stiffness_, float* restLength_)
     {
         firstEnd = firstEnd_;
         secondEnd = secondEnd_;
@@ -24,9 +26,6 @@ class Spring
 
 
     //Get and ToString() methods
-
-    public Mass GetFirstEnd() {return new Mass(firstEnd);}
-    public Mass GetSecondEnd() {return new Mass(secondEnd);}
 
     public override string ToString() 
     {
@@ -44,13 +43,13 @@ class Spring
         {
             Vector3D v = secondEnd.GetPosition() - firstEnd.GetPosition();
             float length = v.Norm();
-            return (stiffness*(length - restLength)/length)*v; 
+            return (*stiffness*(length - *restLength)/length)*v; 
         }
         if (m == secondEnd)
         {
             Vector3D v = firstEnd.GetPosition() - secondEnd.GetPosition();
             float length = v.Norm();
-            return (stiffness*(length - restLength)/length)*v; 
+            return (*stiffness*(length - *restLength)/length)*v; 
         }
         return new Vector3D();
     }

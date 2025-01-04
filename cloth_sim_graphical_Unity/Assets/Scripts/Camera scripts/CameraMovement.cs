@@ -1,4 +1,6 @@
+using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class CameraMovement : MonoBehaviour {
  
@@ -14,6 +16,17 @@ public class CameraMovement : MonoBehaviour {
     float camSens = 0.15f;          //Mouse sensitivity
     private Vector3 lastMouse;     
     private float totalRun = 1.0f;
+
+    public bool IsEditingInputField()
+    {
+    GameObject currentFocus = EventSystem.current.currentSelectedGameObject;
+    if(currentFocus != null)
+    { 
+        // returns true if current gameObject has input field in it
+        return currentFocus.TryGetComponent(out TMP_InputField _);
+    } 
+        return false;
+    }
      
     void Update() 
     {
@@ -54,12 +67,12 @@ public class CameraMovement : MonoBehaviour {
     private Vector3 GetBaseInput() 
     {
         Vector3 p_Velocity = new Vector3();
-        if (Input.GetKey (KeyCode.W)){p_Velocity.z += 1;}
-        if (Input.GetKey (KeyCode.S)){p_Velocity.z -= 1;}
-        if (Input.GetKey (KeyCode.A)){p_Velocity.x -= 1;}
-        if (Input.GetKey (KeyCode.D)){p_Velocity.x += 1;}
-        if (Input.GetKey (KeyCode.Space)){p_Velocity.y += 1;}
-        if (Input.GetKey (KeyCode.X)){p_Velocity.y -= 1;}
+        if (Input.GetKey (KeyCode.W) && !IsEditingInputField()) {p_Velocity.z += 1;}
+        if (Input.GetKey (KeyCode.S) && !IsEditingInputField()) {p_Velocity.z -= 1;}
+        if (Input.GetKey (KeyCode.A) && !IsEditingInputField()) {p_Velocity.x -= 1;}
+        if (Input.GetKey (KeyCode.D) && !IsEditingInputField()) {p_Velocity.x += 1;}
+        if (Input.GetKey (KeyCode.X) && !IsEditingInputField()) {p_Velocity.y -= 1;}
+        if (Input.GetKey (KeyCode.Space) && !IsEditingInputField()) {p_Velocity.y += 1;}
         return p_Velocity;
     }
 }

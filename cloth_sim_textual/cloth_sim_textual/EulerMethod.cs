@@ -4,6 +4,7 @@ using Mass;
 using System.Collections.Generic;
 using ExternalForce;
 
+//An implementation of Euler's (forward, explicit) integration method. 
 class EulerMethod: IntegrationMethod
 {
     public EulerMethod() {}

@@ -4,6 +4,8 @@ using Mass;
 using ExternalForce;
 using System.Collections.Generic;
 
+//A virtual class. 
+//The overridden UpdateForceVelocityPosition in the child classes use their integration rules to solve for the new force, velocity and position of a mass. 
 class IntegrationMethod
 {
     public IntegrationMethod() {}

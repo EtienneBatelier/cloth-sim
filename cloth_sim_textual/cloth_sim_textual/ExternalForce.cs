@@ -2,6 +2,9 @@ namespace ExternalForce{
 using Mass;
 using Vector3D;
 
+//A virtual class to implement forces in the system that do not come from the damped springs. 
+//Each sub-class has its own rules regarding how to check if the forces Applies to a Mass, 
+//and what that Force should be. 
 class ExternalForce
 {   
     protected float? start; 

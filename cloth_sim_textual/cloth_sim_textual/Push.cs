@@ -21,6 +21,7 @@ class Push : ExternalForce
         base.end = end_;
     }
 
+    //Use this constructor to push all the masses in a spherical area. 
     public Push(Vector3D center, float radius, List<ClothPiece> clothPieces, Vector3D force_, float? start_ = null, float? end_ = null) 
     {
         force = force_;

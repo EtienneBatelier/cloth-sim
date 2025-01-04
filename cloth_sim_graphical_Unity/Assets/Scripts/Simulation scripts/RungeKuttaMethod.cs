@@ -5,6 +5,7 @@ using ExternalForce;
 using Mass;
 using System.Collections.Generic;
 
+//An implementation of the RK4 integration method. 
 class RungeKuttaMethod : IntegrationMethod
 {
     private Vector3D k1;

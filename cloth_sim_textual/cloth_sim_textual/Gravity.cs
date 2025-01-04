@@ -3,7 +3,7 @@ using ExternalForce;
 using Mass;
 using Vector3D;
 
-class Gravity : ExternalForce
+unsafe class Gravity : ExternalForce
 {
     private readonly Vector3D gravitationalField;
 
@@ -12,7 +12,7 @@ class Gravity : ExternalForce
 
     public Gravity(Vector3D gravitationalField_, float? start_ = null, float? end_ = null) 
     {
-        gravitationalField = new Vector3D(gravitationalField_);
+        gravitationalField = gravitationalField_;
         base.start = start_;
         base.end = end_;
     }

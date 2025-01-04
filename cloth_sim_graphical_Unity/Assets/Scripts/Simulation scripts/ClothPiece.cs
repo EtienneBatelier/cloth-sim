@@ -1,13 +1,15 @@
 namespace ClothPiece{
-using Vector3D;
 using Mass;
 using System.Collections.Generic;
 using Spring;
 
+//A class with a List of Masses and a List of Springs to represent a piece of cloth. 
+//The Connect method takes two indices and creates a new spring between the corresponding masses in the List. 
 unsafe class ClothPiece
 {
     public List<Mass> masses;
     public List<Spring> springs;
+
 
     //Constructor
 
@@ -36,6 +38,7 @@ unsafe class ClothPiece
     {
         springs.Add(new Spring(masses[idx1], masses[idx2], stiffness, restLength));
     }
+
 
     //Testing methods (should remain as comments)
 
