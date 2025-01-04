@@ -8,7 +8,7 @@ using MassGraphicalUnity;
 using ClothPieceGraphicalUnity; 
 using System.Collections.Generic;
 
-//A static class to produce rectangular ClothPieces without effort. 
+//A static class to produce rectangular ClothPieces without much effort. 
 unsafe static class Sewer
 {
     //This takes a vector and completes it into an orthonormal basis of Euclidean 3-space. 
@@ -43,6 +43,10 @@ unsafe static class Sewer
         return new Vector3D(result);
     }
 
+    //HookedRectangle returns a ClothPiece and a Hook. 
+    //The ClothPiece is rectangular with specified dimensions. 
+    //It is centered at Center and can be tilted: it lies in a plane normal to normalToPlane. 
+    //The hook immobilizes some of the masses, as is indicated in hookInstructions (see README).
     #nullable enable
     public static (ClothPiece, Hook) HookedRectangle(int a, int b, float* mass, float* dampingCoefficient, float* stiffness, float* restLength, Vector3D? center = null, Vector3D? normalToPlane = null, string hookInstructions = "")
     {

@@ -1,10 +1,10 @@
-Cloth Simulation 
+Cloth Simulation -- 01.2025
 
 
 What is in this repository? 
 
 This repository contains two versions of a program that simulates the motion of a rectangular piece of cloth. The first version is purely textual. It is a C# console application that prints out the positions of the particles making up a simulated piece of cloth. The second version uses the Unity engine to provide a real-time, graphical, interactive simulation. 
-
+ 
 The overlap in code between the two versions is large, which is intended. The graphical, Unity version includes most of the .cs files of the textual versions as scripts. It requires a couple specific additional classes whose code is written in new .cs files. They are exactly those whose names end with "GraphicalUnity". These additional classes are solely dedicated to the graphical, Unity version. They all inherit from a textual counterpart, and only contain as new attributes what is strictly needed to display things on the screen. The Unity project contains a single Scene with a Camera, a GameObject to which the simulation scripts are attached to, as well as some additional GameObjects, scripts and other Unity-specific tools to provide a rudimentary UI to the graphical version of the program. 
 
 The strong separation between the code specific to the graphical, Unity version and the code dedicated to the core of the physical simulation should make it straightforward for the user fluent in another game engine or graphical library to turn the textual version into another graphical version. 
@@ -31,11 +31,16 @@ How to interact with the program?
 The textual version has a Main function in the ClothSim class. It can be used to call methods from the TestPrinter static class in which some small examples and test code are readily available. 
 
 The graphical version comes with a simple UI that enables one to interact with the simulation in real time. The keys WASD control the position of the camera. Keeping the right mouse button pressed while moving the mouse around rotates the camera. Below the tag "Parameters" in the top right corners of the screen lie many sliders. They control various parameters of the simulation (e.g, the stiffness of the internal springs making up the piece of cloth, or their rest length, the wind, ...). 
-Below the tag "Cloth" are yet another bunch of sliders and UI components. The sliders "Dimensions" control the dimensions of a new rectangular cloth piece to be simulated. The sliders "Normal to Plane" control the entries of a vector that will be normal to the plane in which the new cloth piece will spawn. The input field "attaching instructions" can be used to specify how the new piece of cloth shall be attached. In this field, zero, one or more of the following instructions can be combined: "first side", "second side", "third side", "fourth side", "all sides", "first corner", ..., "all corners". Once the dimensions, normal vector and attaching instructions are specified, pressing Enter will spawn the new piece of cloth. 
+Below the tag "Cloth" are yet another bunch of sliders and UI components. The sliders "Dimensions" control the dimensions of a new rectangular cloth piece to be simulated. The sliders "Normal to Plane" control the entries of a vector that will be normal to the plane in which the new cloth piece will spawn. The input field "Attaching Instructions" can be used to specify how the new piece of cloth shall be attached. In this field, zero, one or more of the following instructions can be combined: "first side", "second side", "third side", "fourth side", "all sides", "first corner", ..., "all corners". Once the dimensions, normal vector and attaching instructions are specified, pressing Enter will spawn the new piece of cloth. For instance, hitting Enter while the Dimensions sliders are set to 10 and 20, the Normal to Plane sliders are set to 1, 0, 0 and the Attaching Instructions are set to "first side, third corners" will spawn a 10x20 rectangular piece of cloth lying in the yz-plane, with its entire first side and third corner immobilized. 
 
 
-What from here? 
+Authorship. 
 
+
+This program is a personal project, though it is a heavily revisited version of an assignment received while studying at EPFL, Lausanne around 2017. 
+
+
+Where from here? 
 
 Possible extensions: 
 - Coloring the displayed line. The redder, the lager the magnitude of the force of the corresponding spring. 
