@@ -4,8 +4,8 @@ using Vector3D;
 
 unsafe class Spring
 {
-    private readonly Mass firstEnd; 
-    private readonly Mass secondEnd; 
+    protected readonly Mass firstEnd; 
+    protected readonly Mass secondEnd; 
     private float* stiffness; 
     private float* restLength; 
 

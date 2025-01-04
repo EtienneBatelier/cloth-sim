@@ -5,6 +5,7 @@ using Hook;
 using System;
 using Mass;
 using MassGraphicalUnity;
+using ClothPieceGraphicalUnity; 
 using System.Collections.Generic;
 
 unsafe static class Sewer
@@ -52,17 +53,17 @@ unsafe static class Sewer
         {
             for (int j = 0; j < b; j++)
             {
-                masses.Add(new MassGraphicalUnity(mass, dampingCoefficient, center + matrixVectorMult(firstColumn, secondColumn, thirdColumn, new Vector3D(i - a/2.0f, j - b/2.0f, 0)), 1.2f));
+                masses.Add(new Mass(mass, dampingCoefficient, center + matrixVectorMult(firstColumn, secondColumn, thirdColumn, new Vector3D(i - a/2.0f, j - b/2.0f, 0))));
             }
         }
-        ClothPiece clothPiece = new ClothPiece(masses);
+        ClothPieceGraphicalUnity clothPiece = new ClothPieceGraphicalUnity(masses);
         float dist;
         for (int i = 0; i < clothPiece.masses.Count; i++)
         {
             for (int j = 0; j < clothPiece.masses.Count; j++)
             {
                 dist = (clothPiece.masses[i].GetPosition() - clothPiece.masses[j].GetPosition()).SquaredNorm();
-                if (0 < dist && dist < 1.1f) {clothPiece.Connect(i, j, stiffness, restLength);}
+                if (0 < dist && dist < 1.1f) {clothPiece.ConnectGraphicalUnity(i, j, stiffness, restLength);}
             }
         }
 

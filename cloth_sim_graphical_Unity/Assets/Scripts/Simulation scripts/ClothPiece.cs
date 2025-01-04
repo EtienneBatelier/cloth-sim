@@ -7,7 +7,7 @@ using Spring;
 unsafe class ClothPiece
 {
     public List<Mass> masses;
-    private List<Spring> springs;
+    public List<Spring> springs;
 
     //Constructor
 

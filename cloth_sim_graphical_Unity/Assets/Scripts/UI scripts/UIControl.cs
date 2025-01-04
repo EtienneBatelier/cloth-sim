@@ -65,8 +65,8 @@ public class SliderControl : MonoBehaviour
         normalToPlaneXSlider.value = 0.5f;
         normalToPlaneYSlider.value = 0.5f;
         normalToPlaneZSlider.value = 11.0f/20f;
-        dimensionsXSlider.value = 0.23f;
-        dimensionsYSlider.value = 0.44f;
+        dimensionsXSlider.value = 0.24f;
+        dimensionsYSlider.value = 0.49f;
         attachingInstructionsInputField.text = "first side, third side"; 
     }
 
@@ -111,10 +111,10 @@ public class SliderControl : MonoBehaviour
         normalToPlaneZIndicator.text = (-10 + 20*normalToPlaneZSlider.value).ToString("0.0");
         clothSim.normalToPlane.z = (-10 + 20*normalToPlaneZSlider.value);
 
-        dimensionsXIndicator.text = (1 + 39*dimensionsXSlider.value).ToString("0");
+        dimensionsXIndicator.text = ((int) Math.Floor(1 + 39*dimensionsXSlider.value)).ToString("0");
         clothSim.dimensions.x = (int) Math.Floor(1 + 39*dimensionsXSlider.value);
 
-        dimensionsYIndicator.text = (1 + 39*dimensionsYSlider.value).ToString("0");
+        dimensionsYIndicator.text = ((int) Math.Floor(1 + 39*dimensionsYSlider.value)).ToString("0");
         clothSim.dimensions.y = (int) Math.Floor(1 + 39*dimensionsYSlider.value);
 
         clothSim.attachingInstructions = attachingInstructionsInputField.text;

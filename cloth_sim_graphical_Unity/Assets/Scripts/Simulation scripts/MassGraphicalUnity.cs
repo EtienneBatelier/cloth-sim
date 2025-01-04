@@ -25,18 +25,24 @@ unsafe class MassGraphicalUnity : Mass
         sphere.transform.localScale = new Vector3(radius, radius, radius);
     }
 
+
+    //Other methods
+
     public void UpdateGraphicalPosition()
     {
         float[] vector = base.position.GetVector();
         sphere.transform.position = new Vector3(vector[0], vector[2], vector[1]); //Switching second and third coordinates
     }
 
-    public void DestroySphere()
+    public void DestroySphere() {Object.Destroy(sphere);}
+
+    public void ConnectGraphicalUnity()
     {
-        Object.Destroy(sphere);
+        
     }
 
-    //Finalizer
+
+    //Destructor
 
     ~MassGraphicalUnity() {DestroySphere();}
 }

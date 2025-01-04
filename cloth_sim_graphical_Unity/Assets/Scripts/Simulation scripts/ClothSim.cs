@@ -16,6 +16,8 @@ using BackwardEulerMethod;
 using Push;
 using Drag;
 using ClothPiece;
+using ClothPieceGraphicalUnity;
+using SpringGraphicalUnity;
 using ExternalForce;
 using Sewer;
 
@@ -36,14 +38,9 @@ public unsafe class ClothSim : MonoBehaviour
     [SerializeField] public string attachingInstructions;
 
 
-    void UpdateGraphicalPosition(ClothPiece clothPiece)
-    {
-        foreach (MassGraphicalUnity mass in clothPiece.masses) {mass.UpdateGraphicalPosition();}
-    }
-
     void UpdateGraphicalPosition(PhysicalSystem physicalSystem)
     {
-        foreach (ClothPiece clothPiece in physicalSystem.clothPieces) {UpdateGraphicalPosition(clothPiece);}
+        foreach (ClothPieceGraphicalUnity clothPiece in physicalSystem.clothPieces) {clothPiece.UpdateGraphicalPosition();}
     }
 
     void Start()
@@ -69,11 +66,10 @@ public unsafe class ClothSim : MonoBehaviour
         {
             foreach (ClothPiece clothPiece in physicalSystem.clothPieces)
             {
-                foreach (MassGraphicalUnity m in clothPiece.masses)
-                {
-                    m.DestroySphere();
-                } 
+                foreach (MassGraphicalUnity mass in clothPiece.masses) {mass.DestroySphere();} 
+                foreach (SpringGraphicalUnity spring in clothPiece.springs) {spring.DestroyGameObject();} 
             }
+            
             fixed (float* massPtr = &mass, dampingCoefficientPtr = &dampingCoefficient, stiffnessPtr = &stiffness, restLengthPtr = &restLength){
             fixed (Vector3* windVelocityPtr = &windVelocity, gravitationalFieldPtr = &gravitationalField){
                 (ClothPiece clothPiece, Hook hook) = Sewer.HookedRectangle(dimensions.x, dimensions.y, massPtr, dampingCoefficientPtr, stiffnessPtr, restLengthPtr, new Vector3D(), new Vector3D(normalToPlane.x, normalToPlane.y, normalToPlane.z), attachingInstructions);
