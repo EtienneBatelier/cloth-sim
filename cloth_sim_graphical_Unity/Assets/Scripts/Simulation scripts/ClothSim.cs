@@ -28,9 +28,9 @@ public unsafe class ClothSim : MonoBehaviour
     float dt;
 
     float mass;
-    [SerializeField] [Range(0.1f, 10f)] public float dampingCoefficient;
-    [SerializeField] [Range(0f, 20f)] public float stiffness;
-    [SerializeField] [Range(0.1f, 2f)] public float restLength;
+    [SerializeField] [Range(0.1f, 5f)] public float dampingCoefficient;
+    [SerializeField] [Range(1f, 30f)] public float stiffness;
+    [SerializeField] [Range(0f, 2f)] public float restLength;
     [SerializeField] public Vector3 windVelocity;
     [SerializeField] public Vector3 gravitationalField;
     [SerializeField] public Vector3 normalToPlane;
@@ -46,7 +46,7 @@ public unsafe class ClothSim : MonoBehaviour
     void Start()
     {
         mass = 1;
-        dampingCoefficient = .5f; 
+        dampingCoefficient = 1f; 
         stiffness = 10;
         restLength = 1;
         windVelocity = new Vector3(0, 0, 0);
