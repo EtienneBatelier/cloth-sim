@@ -3,7 +3,7 @@ using TMPro;
 using UnityEngine.UI;
 using System;
 
-public class SliderControl : MonoBehaviour
+public class UIControl : MonoBehaviour
 {
     GameObject clothSimulation;
 

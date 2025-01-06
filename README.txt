@@ -36,7 +36,6 @@ Below the tag "Cloth" are yet another bunch of sliders and UI components. The sl
 
 Authorship. 
 
-
 This program is a personal project, though it is a heavily revisited version of an assignment received while studying at EPFL, Lausanne around 2017. 
 
 

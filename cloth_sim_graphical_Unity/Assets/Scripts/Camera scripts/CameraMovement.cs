@@ -22,7 +22,7 @@ public class CameraMovement : MonoBehaviour {
     GameObject currentFocus = EventSystem.current.currentSelectedGameObject;
     if(currentFocus != null)
     { 
-        // returns true if current gameObject has input field in it
+        //Returns true if the current gameObject has a TMP_InputField. 
         return currentFocus.TryGetComponent(out TMP_InputField _);
     } 
         return false;
